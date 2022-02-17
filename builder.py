@@ -1,16 +1,19 @@
 # import fileIO as *
-#import schedule
+import schedule
 #The main of our program
 classrooms =[
 "100",
 "101",
-"102"
+"102",
+"103",
+"104",
+"105",
 ]
 
 class Builder:
     def __init__(self):
         self.a= 0
-        self.schedules = self.createSchedules()
+        self.schedules = self._createSchedules()
 
     def getImport():
         #Use fileIO functions
@@ -20,8 +23,7 @@ class Builder:
 
     def _createSchedules(self):
         # for i in range(len(athleteList)!):
-            schedules[i] = Scheule(self.athleteList, self.tutorList, classrooms)
-
+            schedules[i] = Schedule(self.athleteList, self.tutorList, classrooms)
 
 def __main__():
     builder = Builder()
