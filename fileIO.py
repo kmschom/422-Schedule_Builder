@@ -3,6 +3,6 @@ def readFiles():
 
 
 # tutorInfo = [personInfo1: List, personInfo2: List]
-# athleteInfo = [athleteInfo1: List, athleteInfo2: List]
+# athleteInfo = [{name: here, classes: here, hours: here, grade: here, etc.: here}, athleteInfo2: List]
 
 def writeCSV(schedules):
