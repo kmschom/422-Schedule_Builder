@@ -29,8 +29,10 @@ class Builder:
         self.schedules = self._createSchedules()
 
     def _createSchedules(self):
-        for i in range(3):
-            schedules[i] = Schedule(self.athleteList, self.tutorList, classrooms)
+        schedules = []
+        for i in range(1):
+            schedules.append(Schedule(self.athleteList, self.tutorList, classrooms))
+        return schedules
 
     def _createLists(self):
         for tu in self.tutorDataList:

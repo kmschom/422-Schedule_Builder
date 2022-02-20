@@ -27,15 +27,17 @@ class Schedule:
     def __init__(self, athleteList, tutorList, classrooms):
         self.a = 0
         self.athleteList = athleteList
+        print(athleteList)
         self.tutorList = tutorList
         self.classrooms = classrooms
         self.score = 0
         self.required = self._createRequired()
         self.optional = self._createOptional()
 
-    def makeSchedule():
+    def makeSchedule(self):
         self._scheduleRequired()
         self._scheduleOptional()
+        print(self.required)
 
     def _scheduleRequired(self):
         return 0
@@ -50,7 +52,11 @@ class Schedule:
             if ath.required:
                 x = (random.randint(0,999)) / 1000
                 ath.hours += x
-                reqQ.put((ath.hours, ath))
+                reqQ.put((1/ath.hours, ath, ath.hours))
+        while not reqQ.empty():
+            next_item = reqQ.get()
+            print(next_item)
+        return reqQ
 
     def _createOptional(self):
         #Create prio queue
@@ -59,4 +65,8 @@ class Schedule:
             if not ath.required:
                 x = (random.randint(0,999)) / 1000
                 ath.hours += x
-                optQ.put((ath.hours, ath))
+                optQ.put((1/ath.hours, ath, ath.hours))
+        while not optQ.empty():
+            next_item = optQ.get()
+            print(next_item)
+        return optQ

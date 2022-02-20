@@ -1,9 +1,11 @@
+import random
+
 class Tutor:
     def __init__(self, data):
         self.id = data["id"]
         self.name = data["name"]
         self.lastname = data["lastname"]
-        self.availability = data["availability"]
+        self.availability = random.shuffle(data["availability"])
         self.subjects = data["subjects"]
         self.hours = data["hours"]
 
