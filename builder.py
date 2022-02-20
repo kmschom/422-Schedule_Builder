@@ -1,6 +1,7 @@
 
 from managerInterface import ManagerInterface
 from fileIO import FileIO
+from schedule import Schedule
 
 classrooms =[
 "100",

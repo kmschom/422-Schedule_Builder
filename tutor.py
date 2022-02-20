@@ -10,5 +10,5 @@ class Tutor:
     def __str__(self):
         return self.name
 
-    def isAvailable(self, time, subject):
+    #def isAvailable(self, time, subject):
         #Return boolean if the tutor is avaiable at time and teaches the subject
