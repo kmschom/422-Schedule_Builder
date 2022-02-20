@@ -17,14 +17,14 @@ athleteList = [
 "required": False
 },
 
-# {"id": ,
-# "name": "",
-# "lastname": "",
-# "availability": [],
-# "subjects": [],
-# "hours": [],
-# "required": True
-# },
+{"id": 125,
+"name": "brianna",
+"lastname": "vago",
+"availability": [[12,13], [7,8], [12,13], [7,8], [5,6]],
+"subjects": ["math", "volleyball"],
+"hours": [4],
+"required": True
+},
 #
 # {"id": ,
 # "name": "",
@@ -52,7 +52,7 @@ tutorList = [
 "name": "kelly",
 "lastname": "schombert",
 "availability": [[10], [13], [10], [13], [16]],
-"subjects": ["trolling", "methodology","econ",""],
+"subjects": ["trolling", "methodology","econ","volleyball"],
 "hours": [20],
 },
 ]

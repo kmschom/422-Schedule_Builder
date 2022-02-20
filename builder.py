@@ -14,16 +14,17 @@ classrooms =[
 class Builder:
     def __init__(self):
         self.a= 0
-        # self.schedules = self._createSchedules()
+
         # self.UI = ManagerInterface(True,self.test)
         self.fileIO = FileIO()
         (self.tutorList, self.athleteList) = self.fileIO.readFiles()
         # print(self.tutorList)
+        self.schedules = self._createSchedules()
 
 
-    # def _createSchedules(self):
-    #     for i in range(len(athleteList)!):
-    #         schedules[i] = Schedule(self.athleteList, self.tutorList, classrooms)
+    def _createSchedules(self):
+        for i in range(3):
+            schedules[i] = Schedule(self.athleteList, self.tutorList, classrooms)
 
     def test(self,path):
         print(path)
