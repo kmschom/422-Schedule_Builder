@@ -19,7 +19,7 @@ Created file    my 2/12/22
 
 import athlete
 import tutor
-import appointment
+from appointment import Appointment
 import random
 from queue import PriorityQueue
 
@@ -33,14 +33,47 @@ class Schedule:
         self.score = 0
         self.required = self._createRequired()
         self.optional = self._createOptional()
+        self.appointments = []
+        self.makeSchedule()
 
     def makeSchedule(self):
         self._scheduleRequired()
-        self._scheduleOptional()
-        print(self.required)
+        #self._scheduleOptional()
+        #print(self.required)
 
     def _scheduleRequired(self):
-        return 0
+        print("I'M HERE\n")
+        print(self.required)
+        while not self.required.empty():
+            print("In queue\n")
+            scheduled = False
+            currentDay = 0
+            ath = self.required.get()[1]
+            print(ath)
+            while not scheduled:
+                print("In scheduled\n")
+                #print(ath.availability)
+                availability = ath.availability[currentDay]
+                for time in availability:
+                    for sub in ath.subjects:
+                        for tut in self.tutorList:
+                            if sub in tut.subjects:
+                                if time in tut.availability[currentDay]:
+                                    self.appointments.append(Appointment((time, currentDay), tut, ath, sub, self.classrooms[0]))
+                                    print("Made an appt\n")
+                                    ath.hours -= 1
+                                    if ath.hours > 1:
+                                        self.required.put((1/ath.hours, ath, ath.hours))
+                                    ath.availability[currentDay].remove(time)
+                                    tut.availability[currentDay].remove(time)
+                                    scheduled = True
+                if currentDay < 4:
+                    currentDay += 1
+                else:
+                    break
+        print(self.appointments, len(self.appointments))
+
+
 
     def _scheduleOptional(self):
         return 0
@@ -53,9 +86,9 @@ class Schedule:
                 x = (random.randint(0,999)) / 1000
                 ath.hours += x
                 reqQ.put((1/ath.hours, ath, ath.hours))
-        while not reqQ.empty():
-            next_item = reqQ.get()
-            print(next_item)
+        #while not reqQ.empty():
+            #next_item = reqQ.get()
+            #print(next_item)
         return reqQ
 
     def _createOptional(self):

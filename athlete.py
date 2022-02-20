@@ -5,8 +5,9 @@ class Athlete:
         self.id = data["id"]
         self.name = data["name"]
         self.lastname = data["lastname"]
-        self.availability = random.shuffle(data["availability"])
+        self.availability = self.shuffleTimes(data["availability"])
         self.subjects = data["subjects"]
+        random.shuffle(self.subjects)
         self.hours = data["hours"]
         self.required = data["required"]
 
@@ -16,6 +17,7 @@ class Athlete:
     def __repr__(self):
         return self.name
 
-    def nextAvailability(self, currentTime):
-        #Find the next available time given the last checked available time "currentTime"
-        return 0
+    def shuffleTimes(self, availability):
+        for day in availability:
+            random.shuffle(day)
+        return availability
