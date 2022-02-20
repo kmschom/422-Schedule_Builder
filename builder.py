@@ -1,7 +1,7 @@
-# import fileIO as *
-# import schedule
+
 from managerInterface import ManagerInterface
-#The main of our program
+from fileIO import FileIO
+
 classrooms =[
 "100",
 "101",
@@ -15,14 +15,11 @@ class Builder:
     def __init__(self):
         self.a= 0
         # self.schedules = self._createSchedules()
-        self.UI = ManagerInterface(True,self.test)
+        # self.UI = ManagerInterface(True,self.test)
+        self.fileIO = FileIO()
+        (self.tutorList, self.athleteList) = self.fileIO.readFiles()
+        # print(self.tutorList)
 
-    # def getImport():
-    #     #Use fileIO functions
-    #     #imports = fileIO.readFiles
-    #     #self.athleteList = import[0]
-    #     #self.tutorList = import[1]
-    #     self.b = 0
 
     # def _createSchedules(self):
     #     for i in range(len(athleteList)!):
