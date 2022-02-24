@@ -10,7 +10,6 @@ schedule.py is part of the Schedule_Builder software.
 Called by:
     builder.py -
 
-
 Modifications:
 Created file                    my 2/12/22
 Implemented required queue      ks, my 2/19/22
@@ -39,7 +38,7 @@ class Schedule:
         self.makeSchedule()
 
     def makeSchedule(self):
-        #self._scheduleRequired()
+        self._scheduleRequired()
         self._scheduleOptional()
         # print(self.required)
 
@@ -70,25 +69,31 @@ class Schedule:
                                     ath.availability[currentDay].remove(time)
                                     tut.availability[currentDay].remove(time)
                                     scheduled = True
-                # check for existing appointments
-                for appt in self.appointments:
-                    for time in availability:
-                        for sub in ath.subjects:
-                            if currentDay == appt.day:
-                                if (sub == appt.subject) and (time == appt.time):
-                                    if len(appt.athletes) < 3:
-                                        appt.athletes.append(ath)
-                                        print("Added athlete to an appointment\n")
-                                        ath.hours -= 1
-                                        if ath.hours > 1:
-                                            self.required.put((1 / ath.hours, ath, ath.hours))
-                                        ath.availability[currentDay].remove(time)
-                                        scheduled = True
-
                 if currentDay < 4:
                     currentDay += 1
                 else:
-                    # self.required.put(()1/ath.hours, ath, ath.hours))  Need this?
+                    currentDay = 0
+                    while not scheduled:
+                        availability = ath.availability[currentDay]
+                        # check for existing appointments
+                        for appt in self.appointments:
+                            if currentDay == appt.day:
+                                for time in availability:
+                                    if time == appt.time:
+                                        for sub in ath.subjects:
+                                            if sub == appt.subject:
+                                                if len(appt.athletes) < 3:
+                                                    appt.athletes.append(ath)
+                                                    print("Added athlete to an appointment\n")
+                                                    ath.hours -= 1
+                                                    if ath.hours > 1:
+                                                        self.required.put((1 / ath.hours, ath, ath.hours))
+                                                    ath.availability[currentDay].remove(time)
+                                                    scheduled = True
+                        if currentDay < 4:
+                            currentDay += 1
+                        else:
+                            break
                     break
         print(self.appointments, len(self.appointments))
 
@@ -109,8 +114,7 @@ class Schedule:
                         for tut in self.tutorList:
                             if sub in tut.subjects:
                                 if time in tut.availability[currentDay]:
-                                    self.appointments.append(
-                                        Appointment((time, currentDay), tut, ath, sub, self.classrooms[0]))
+                                    self.appointments.append(Appointment((time, currentDay), tut, ath, sub, self.classrooms[0]))
                                     print("Made an appt\n")
                                     ath.hours -= 1
                                     if ath.hours > 1:
@@ -118,34 +122,40 @@ class Schedule:
                                     ath.availability[currentDay].remove(time)
                                     tut.availability[currentDay].remove(time)
                                     scheduled = True
-                # check for existing appointments
-                for appt in self.appointments:
-                    for time in availability:
-                        for sub in ath.subjects:
-                            if currentDay == appt.day:
-                                if (sub == appt.subject) and (time == appt.time):
-                                    if len(appt.athletes) < 3:
-                                        appt.athletes.append(ath)
-                                        print("Added athlete to an appointment\n")
-                                        ath.hours -= 1
-                                        if ath.hours > 1:
-                                            self.optional.put((1 / ath.hours, ath, ath.hours))
-                                        ath.availability[currentDay].remove(time)
-                                        scheduled = True
-
                 if currentDay < 4:
                     currentDay += 1
                 else:
-                    # self.optional.put((1/ath.hours, ath, ath.hours))  Need this?
+                    currentDay = 0
+                    while not scheduled:
+                        availability = ath.availability[currentDay]
+                        # check for existing appointments
+                        for appt in self.appointments:
+                            if currentDay == appt.day:
+                                for time in availability:
+                                    if time == appt.time:
+                                        for sub in ath.subjects:
+                                            if sub == appt.subject:
+                                                if len(appt.athletes) < 3:
+                                                    appt.athletes.append(ath)
+                                                    print("Added athlete to an appointment\n")
+                                                    ath.hours -= 1
+                                                    if ath.hours > 1:
+                                                        self.optional.put((1 / ath.hours, ath, ath.hours))
+                                                    ath.availability[currentDay].remove(time)
+                                                    scheduled = True
+                        if currentDay < 4:
+                            currentDay += 1
+                        else:
+                            break
                     break
         print(self.appointments, len(self.appointments))
-        return 0
 
     def _createRequired(self):
         # Create prio queue
         reqQ = PriorityQueue()
         for ath in self.athleteList:
             if ath.required:
+                print(ath)
                 x = (random.randint(0, 999)) / 1000
                 ath.hours += x
                 reqQ.put((1 / ath.hours, ath, ath.hours))
@@ -159,6 +169,7 @@ class Schedule:
         optQ = PriorityQueue()
         for ath in self.athleteList:
             if not ath.required:
+                print(ath)
                 x = (random.randint(0, 999)) / 1000
                 ath.hours += x
                 optQ.put((1 / ath.hours, ath, ath.hours))
