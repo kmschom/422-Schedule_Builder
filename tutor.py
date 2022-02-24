@@ -17,6 +17,3 @@ class Tutor:
         for day in availability:
             random.shuffle(day)
         return availability
-
-    #def isAvailable(self, time, subject):
-        #Return boolean if the tutor is avaiable at time and teaches the subject
