@@ -12,7 +12,9 @@ Called by:
 
 
 Modifications:
-Created file    my 2/12/22
+Created file                    my 2/12/22
+Implemented required queue      ks, my 2/19/22
+Implemented optional queue      ks 2/23/22
 
 """
 
@@ -37,8 +39,8 @@ class Schedule:
         self.makeSchedule()
 
     def makeSchedule(self):
-        self._scheduleRequired()
-        # self._scheduleOptional()
+        #self._scheduleRequired()
+        self._scheduleOptional()
         # print(self.required)
 
     def _scheduleRequired(self):
@@ -160,7 +162,7 @@ class Schedule:
                 x = (random.randint(0, 999)) / 1000
                 ath.hours += x
                 optQ.put((1 / ath.hours, ath, ath.hours))
-        while not optQ.empty():
-            next_item = optQ.get()
-            print(next_item)
+        #while not optQ.empty():
+        #    next_item = optQ.get()
+        #    print(next_item)
         return optQ
