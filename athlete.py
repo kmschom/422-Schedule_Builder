@@ -27,13 +27,18 @@ class Athlete:
         subjectHours = []
         hoursLeft = self.hours
         for sub in self.subjects:
-            if hoursLeft >= 0:
+            if hoursLeft <= 0:
                 break
             else:
                 if hoursLeft % 2==0:
-                    subjectHours[sub] = 2
+                    subjectHours.append((sub,2))
                     hoursLeft-=2
                 else:
-                    subjectHours[sub] = 1
+                    subjectHours.append((sub,1))
                     hoursLeft -= 1
+        while hoursLeft:
+            for index,sub in enumerate(subjectHours):
+                subjectHours[index] = (sub[0], sub[1]+1)
+                hoursLeft-=1
+                
         return subjectHours
