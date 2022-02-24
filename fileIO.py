@@ -14,7 +14,7 @@
 "availability": [[9,10], [16,17], [9,10], [16,17], [11,12]],
 "subjects": ["trolling", "methodology"],
 "hours": 2,
-"required": True
+"required": False
 },
 
 {"id": 125,
