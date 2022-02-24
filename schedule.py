@@ -16,12 +16,12 @@ Created file    my 2/12/22
 
 """
 
-
 import athlete
 import tutor
 from appointment import Appointment
 import random
 from queue import PriorityQueue
+
 
 class Schedule:
     def __init__(self, athleteList, tutorList, classrooms):
@@ -38,8 +38,8 @@ class Schedule:
 
     def makeSchedule(self):
         self._scheduleRequired()
-        #self._scheduleOptional()
-        #print(self.required)
+        # self._scheduleOptional()
+        # print(self.required)
 
     def _scheduleRequired(self):
         print("I'M HERE\n")
@@ -52,53 +52,114 @@ class Schedule:
             print(ath)
             while not scheduled:
                 print("In scheduled\n")
-                #print(ath.availability)
+                # print(ath.availability)
                 availability = ath.availability[currentDay]
                 for time in availability:
                     for sub in ath.subjects:
                         for tut in self.tutorList:
                             if sub in tut.subjects:
                                 if time in tut.availability[currentDay]:
-                                    self.appointments.append(Appointment((time, currentDay), tut, ath, sub, self.classrooms[0]))
+                                    self.appointments.append(
+                                        Appointment((time, currentDay), tut, ath, sub, self.classrooms[0]))
                                     print("Made an appt\n")
                                     ath.hours -= 1
                                     if ath.hours > 1:
-                                        self.required.put((1/ath.hours, ath, ath.hours))
+                                        self.required.put((1 / ath.hours, ath, ath.hours))
                                     ath.availability[currentDay].remove(time)
                                     tut.availability[currentDay].remove(time)
                                     scheduled = True
+                # check for existing appointments
+                for appt in self.appointments:
+                    for time in availability:
+                        for sub in ath.subjects:
+                            if currentDay == appt.day:
+                                if (sub == appt.subject) and (time == appt.time):
+                                    if len(appt.athletes) < 3:
+                                        appt.athletes.append(ath)
+                                        print("Added athlete to an appointment\n")
+                                        ath.hours -= 1
+                                        if ath.hours > 1:
+                                            self.required.put((1 / ath.hours, ath, ath.hours))
+                                        ath.availability[currentDay].remove(time)
+                                        scheduled = True
+
                 if currentDay < 4:
                     currentDay += 1
                 else:
+                    # self.required.put(()1/ath.hours, ath, ath.hours))  Need this?
                     break
         print(self.appointments, len(self.appointments))
 
-
-
     def _scheduleOptional(self):
+        print("In optional scheduling\n")
+        print(self.optional)
+        while not self.optional.empty():
+            scheduled = False
+            currentDay = 0
+            ath = self.optional.get()[1]
+            print(ath)
+            while not scheduled:
+                print("In scheduled\n")
+                # print(ath.availability)
+                availability = ath.availability[currentDay]
+                for time in availability:
+                    for sub in ath.subjects:
+                        for tut in self.tutorList:
+                            if sub in tut.subjects:
+                                if time in tut.availability[currentDay]:
+                                    self.appointments.append(
+                                        Appointment((time, currentDay), tut, ath, sub, self.classrooms[0]))
+                                    print("Made an appt\n")
+                                    ath.hours -= 1
+                                    if ath.hours > 1:
+                                        self.optional.put((1 / ath.hours, ath, ath.hours))
+                                    ath.availability[currentDay].remove(time)
+                                    tut.availability[currentDay].remove(time)
+                                    scheduled = True
+                # check for existing appointments
+                for appt in self.appointments:
+                    for time in availability:
+                        for sub in ath.subjects:
+                            if currentDay == appt.day:
+                                if (sub == appt.subject) and (time == appt.time):
+                                    if len(appt.athletes) < 3:
+                                        appt.athletes.append(ath)
+                                        print("Added athlete to an appointment\n")
+                                        ath.hours -= 1
+                                        if ath.hours > 1:
+                                            self.optional.put((1 / ath.hours, ath, ath.hours))
+                                        ath.availability[currentDay].remove(time)
+                                        scheduled = True
+
+                if currentDay < 4:
+                    currentDay += 1
+                else:
+                    # self.optional.put((1/ath.hours, ath, ath.hours))  Need this?
+                    break
+        print(self.appointments, len(self.appointments))
         return 0
 
     def _createRequired(self):
-        #Create prio queue
+        # Create prio queue
         reqQ = PriorityQueue()
         for ath in self.athleteList:
             if ath.required:
-                x = (random.randint(0,999)) / 1000
+                x = (random.randint(0, 999)) / 1000
                 ath.hours += x
-                reqQ.put((1/ath.hours, ath, ath.hours))
-        #while not reqQ.empty():
-            #next_item = reqQ.get()
-            #print(next_item)
+                reqQ.put((1 / ath.hours, ath, ath.hours))
+        # while not reqQ.empty():
+        # next_item = reqQ.get()
+        # print(next_item)
         return reqQ
 
     def _createOptional(self):
-        #Create prio queue
+        # Create prio queue
         optQ = PriorityQueue()
         for ath in self.athleteList:
             if not ath.required:
-                x = (random.randint(0,999)) / 1000
+                x = (random.randint(0, 999)) / 1000
                 ath.hours += x
-                optQ.put((1/ath.hours, ath, ath.hours))
+                optQ.put((1 / ath.hours, ath, ath.hours))
         while not optQ.empty():
             next_item = optQ.get()
             print(next_item)
