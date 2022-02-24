@@ -66,9 +66,17 @@ class Schedule:
                                     ath.hours -= 1
                                     if ath.hours > 1:
                                         self.required.put((1 / ath.hours, ath, ath.hours))
+                                    print(ath.availability[currentDay], time)
                                     ath.availability[currentDay].remove(time)
                                     tut.availability[currentDay].remove(time)
                                     scheduled = True
+                            if scheduled:
+                                break
+                        if scheduled:
+                            break
+                    if scheduled:
+                        break
+
                 if currentDay < 4:
                     currentDay += 1
                 else:
@@ -90,6 +98,13 @@ class Schedule:
                                                         self.required.put((1 / ath.hours, ath, ath.hours))
                                                     ath.availability[currentDay].remove(time)
                                                     scheduled = True
+                                            if scheduled:
+                                                break
+                                    if scheduled:
+                                        break
+                            if scheduled:
+                                break
+
                         if currentDay < 4:
                             currentDay += 1
                         else:
@@ -122,6 +137,12 @@ class Schedule:
                                     ath.availability[currentDay].remove(time)
                                     tut.availability[currentDay].remove(time)
                                     scheduled = True
+                            if scheduled:
+                                break
+                        if scheduled:
+                            break
+                    if scheduled:
+                        break
                 if currentDay < 4:
                     currentDay += 1
                 else:

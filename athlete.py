@@ -10,6 +10,7 @@ class Athlete:
         random.shuffle(self.subjects)
         self.hours = data["hours"]
         self.required = data["required"]
+        self.hoursLeft = self.createHours()
 
     def __str__(self):
         return self.name
@@ -21,3 +22,18 @@ class Athlete:
         for day in availability:
             random.shuffle(day)
         return availability
+
+    def createHours(self):
+        subjectHours = []
+        hoursLeft = self.hours
+        for sub in self.subjects:
+            if hoursLeft >= 0:
+                break
+            else:
+                if hoursLeft % 2==0:
+                    subjectHours[sub] = 2
+                    hoursLeft-=2
+                else:
+                    subjectHours[sub] = 1
+                    hoursLeft -= 1
+        return subjectHours
