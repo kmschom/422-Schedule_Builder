@@ -4,6 +4,7 @@ from fileIO import FileIO
 from schedule import Schedule
 from tutor import Tutor
 from athlete import Athlete
+import copy
 
 classrooms =[
 "100",
@@ -23,15 +24,19 @@ class Builder:
         (self.tutorDataList, self.athleteDataList) = self.fileIO.readFiles()
         # print(self.tutorList)
 
-        self.tutorList = []
-        self.athleteList = []
-        self._createLists()
+        # self._createLists()
         self.schedules = self._createSchedules()
+        self.bestSchedule = self.getBestSchedule()
+        self.showAppointments(self.bestSchedule)
+        print(self.bestSchedule.score)
 
     def _createSchedules(self):
         schedules = []
-        for i in range(1):
-            schedules.append(Schedule(self.athleteList, self.tutorList, classrooms))
+        for i in range(1000):
+            # print(self.athleteList, "asd")
+            sch = Schedule( copy.deepcopy(self.athleteDataList), copy.deepcopy(self.tutorDataList), classrooms)
+            sch.makeSchedule()
+            schedules.append(sch)
         return schedules
 
     def _createLists(self):
@@ -41,8 +46,19 @@ class Builder:
         for ath in self.athleteDataList:
             self.athleteList.append(Athlete(ath))
 
-    def test(self,path):
-        print(path)
+    def getBestSchedule(self):
+        bestSchedule = None
+        bestScore = 0
+        for sch in self.schedules:
+            if sch.score > bestScore:
+                bestSchedule = sch
+                bestScore = sch.score
+        return bestSchedule
+
+    def showAppointments(self, schedule):
+        i = 0
+        for appt in schedule.appointments:
+            print(appt)
 
 def main():
     builder = Builder()

@@ -139,6 +139,7 @@ class FileIO:
                 DictB = {"id": int(temp[2]), "name": temp[0], "lastname": temp[1], "availability": week,
                          "subjects": temp[4], "hours": int(temp[3])}
                 tutor_dict.append(DictB)
+        # print(athlete_dict)
         return(tutor_dict, athlete_dict)
 
     def writeCSV(schedules):

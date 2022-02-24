@@ -17,40 +17,51 @@ Implemented optional queue      ks 2/23/22
 
 """
 
-import athlete
-import tutor
+from tutor import Tutor
+from athlete import Athlete
 from appointment import Appointment
 import random
 from queue import PriorityQueue
 
 
 class Schedule:
-    def __init__(self, athleteList, tutorList, classrooms):
+    def __init__(self, athleteDataList, tutorDataList, classrooms):
         self.a = 0
-        self.athleteList = athleteList
-        print(athleteList)
-        self.tutorList = tutorList
+        self.athleteList = []
+        # print(athleteList)
+        self.tutorList = []
+        self._createLists(athleteDataList, tutorDataList)
         self.classrooms = classrooms
         self.score = 0
         self.required = self._createRequired()
         self.optional = self._createOptional()
         self.appointments = []
-        self.makeSchedule()
+        self.score = 0
+
+
+    def _createLists(self, athleteDataList, tutorDataList):
+        for tu in tutorDataList:
+            self.tutorList.append(Tutor(tu))
+
+        for ath in athleteDataList:
+            self.athleteList.append(Athlete(ath))
+        # print("lengths are", (self.athleteList[0].availability))
 
     def makeSchedule(self):
         self._scheduleRequired()
         self._scheduleOptional()
         # print(self.required)
+        return self.score
 
     def _scheduleRequired(self):
-        print("I'M HERE\n")
-        print(self.required)
+        # print("I'M HERE\n")
+        # print(self.required)
         while not self.required.empty():
             # print("In queue\n")
             scheduled = False
             currentDay = 0
             ath = self.required.get()[1]
-            print(ath)
+            # print(ath)
             while not scheduled:
                 # print("In scheduled\n")
                 # print(ath.availability)
@@ -58,20 +69,19 @@ class Schedule:
                 for time in availability:
                     for (sub,hours) in ath.hoursLeft:
                         if hours > 0:
-                            # print("yes")
                             for tut in self.tutorList:
                                 if sub in tut.subjects:
                                     if time in tut.availability[currentDay]:
                                         self.appointments.append(
                                             Appointment((time, currentDay), tut, ath, sub, self.classrooms[0]))
-                                        print("Made an appt\n")
+                                        # print("Made an appt\n")
                                         ath.hours -= 1
                                         if ath.hours > 1:
                                             self.required.put((1 / ath.hours, ath, ath.hours))
-                                        print(ath.availability[currentDay], time)
                                         ath.availability[currentDay].remove(time)
                                         tut.availability[currentDay].remove(time)
                                         ath.hoursLeft.remove((sub,hours))
+                                        self.score+=1000
                                         if (hours - 1 > 0):
                                             ath.hoursLeft.append((sub, hours-1))
 
@@ -100,12 +110,16 @@ class Schedule:
                                                 if sub == appt.subject:
                                                     if len(appt.athletes) < 3:
                                                         appt.athletes.append(ath)
-                                                        print("Added athlete to an appointment\n")
+                                                        # print("Added athlete to an appointment\n")
                                                         ath.hours -= 1
                                                         if ath.hours > 1:
                                                             self.required.put((1 / ath.hours, ath, ath.hours))
                                                         ath.availability[currentDay].remove(time)
+                                                        ath.hoursLeft.remove((sub,hours))
+                                                        if (hours - 1 > 0):
+                                                            ath.hoursLeft.append((sub, hours-1))
                                                         scheduled = True
+                                                        self.score+=1000
                                             if scheduled:
                                                 break
                                     if scheduled:
@@ -118,16 +132,16 @@ class Schedule:
                         else:
                             break
                     break
-        print(self.appointments, len(self.appointments))
+        # print(self.appointments, len(self.appointments))
 
     def _scheduleOptional(self):
-        print("In optional scheduling\n")
-        print(self.optional)
+        # print("In optional scheduling\n")
+        # print(self.optional)
         while not self.optional.empty():
             scheduled = False
             currentDay = 0
             ath = self.optional.get()[1]
-            print(ath)
+            # print(ath)
             while not scheduled:
                 # print("In scheduled\n")
                 # print(ath.availability)
@@ -139,7 +153,7 @@ class Schedule:
                                 if sub in tut.subjects:
                                     if time in tut.availability[currentDay]:
                                         self.appointments.append(Appointment((time, currentDay), tut, ath, sub, self.classrooms[0]))
-                                        print("Made an appt\n")
+                                        # print("Made an appt\n")
                                         ath.hours -= 1
                                         if ath.hours > 1:
                                             self.optional.put((1 / ath.hours, ath, ath.hours))
@@ -149,6 +163,7 @@ class Schedule:
                                         if (hours - 1 > 0):
                                             ath.hoursLeft.append((sub, hours-1))
                                         scheduled = True
+                                        self.score +=1
                                 if scheduled:
                                     break
                         if scheduled:
@@ -171,12 +186,13 @@ class Schedule:
                                                 if sub == appt.subject:
                                                     if len(appt.athletes) < 3:
                                                         appt.athletes.append(ath)
-                                                        print("Added athlete to an appointment\n")
+                                                        # print("Added athlete to an appointment\n")
                                                         ath.hours -= 1
                                                         if ath.hours > 1:
                                                             self.optional.put((1 / ath.hours, ath, ath.hours))
                                                         ath.availability[currentDay].remove(time)
                                                         scheduled = True
+                                                        self.score += 1
                                                         ath.hoursLeft.remove((sub,hours))
                                                         if (hours - 1 > 0):
                                                             ath.hoursLeft.append((sub, hours-1))
@@ -191,16 +207,23 @@ class Schedule:
                         else:
                             break
                     break
-        print(self.appointments, len(self.appointments))
+        # print(self.appointments, len(self.appointments))
 
     def _createRequired(self):
         # Create prio queue
+
+        decimals = []
+        for i in range(1000):
+            decimals.append(i)
+        rangee = 999
         reqQ = PriorityQueue()
         for ath in self.athleteList:
             if ath.required:
-                print(ath)
-                x = (random.randint(0, 999)) / 1000
-                ath.hours += x
+                # print(ath)
+                x = (random.randint(0, rangee))
+                ath.hours += decimals[x]/ 1000
+                decimals.remove(decimals[x])
+                rangee -= 1
                 reqQ.put((1 / ath.hours, ath, ath.hours))
         # while not reqQ.empty():
         #     next_item = reqQ.get()
@@ -209,12 +232,18 @@ class Schedule:
 
     def _createOptional(self):
         # Create prio queue
+        decimals = []
+        for i in range(1000):
+            decimals.append(i)
+        rangee = 999
         optQ = PriorityQueue()
         for ath in self.athleteList:
             if not ath.required:
-                print(ath)
-                x = (random.randint(0, 999)) / 1000
-                ath.hours += x
+                # print(ath)
+                x = (random.randint(0, rangee))
+                ath.hours += decimals[x]/ 1000
+                decimals.remove(decimals[x])
+                rangee -= 1
                 optQ.put((1 / ath.hours, ath, ath.hours))
         # while not optQ.empty():
         #    next_item = optQ.get()
