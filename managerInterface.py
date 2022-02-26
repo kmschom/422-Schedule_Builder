@@ -4,6 +4,7 @@ from tkinter import filedialog
 from tkinter import messagebox
 import os
 from os.path import exists
+from tkinter import simpledialog
 
 class ManagerInterface:
     def __init__(self, scheduleExists, signalSchedule):
@@ -13,14 +14,14 @@ class ManagerInterface:
 
     def _createDisplay(self):
         #Initialize tkinter window and set its properties
-        print("mret gay")
         self.root = Tk()
         self.root.geometry("1260x640")
+        self.root.minsize(1260,640)
+        self.root.maxsize(1260,640)
 
         '''Menu Setup'''
         menubar = Menu(self.root)
         self.root.config(menu=menubar)
-        #Creating a menu drop down for user input
         file_menu = Menu(menubar, tearoff=False)
         file_menu.add_command(
             label='Import Lists',
@@ -47,12 +48,20 @@ class ManagerInterface:
         if self.scheduleExists:
             print("yes")
 
-            yesLabel = Label(self.root, text = "Yes", bg = "Green", fg = "white", padx = 30, relief  = RAISED, width =10, font = ("Arial", 12))
-            yesLabel.pack()
-            # yesLabel.grid(row = 1, column = 1, padx = 5, pady = 5)
+            canvas = Canvas(self.root, width = 500, height = 400)
+            canvas.pack()
+            target = Entry(self.root)
+            canvas.create_window(250, 200, window=target)           # change from entry box to scroll dropdown list OR have auto-complete name from dynamic drop menu on familiar names
+
+            nameEntry = Button(text="Generate", command=None)           # tie command to necessary funct in builder/appointment?
+            canvas.create_window(250, 240, window=nameEntry)
 
         else:
             print("no")
+
+            noLabel = Label(self.root, text = "No schedule found: To create a schedule, please navigate to\n File -> Import Files ", bg = None, fg = "black", font = ("Arial", 30))  # make font size dynamic relative to window size
+            noLabel.place(x = 70, y = 90)
+            # noLabel.pack()
 
         print("updated")
         self.root.mainloop()
@@ -70,3 +79,6 @@ class ManagerInterface:
             # print(file1)
             file2 = filedialog.askopenfilename()
             self._startScheduling(file1, file2)
+
+
+call = ManagerInterface(True, False)
