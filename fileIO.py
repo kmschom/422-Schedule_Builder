@@ -63,8 +63,10 @@ class FileIO:
         their own dictionary. It then returns a list of dictionaries
         for the athletes and for the tutors"""
         # make the file names and initialize the heading and rows list
-        file1 = "athlete.csv"
-        file2 = "tutor.csv"
+        # file1 = "athlete.csv"
+        # file2 = "tutor.csv"
+        file1 = "bigAth.csv"
+        file2 = "bigTut.csv"
         headingsA = []
         athlete_dict = []
         headingsT = []

@@ -39,6 +39,6 @@ class Athlete:
         while hoursLeft:
             for index,sub in enumerate(subjectHours):
                 subjectHours[index] = (sub[0], sub[1]+1)
-                hoursLeft-=1
-                
+            hoursLeft-=1
+
         return subjectHours

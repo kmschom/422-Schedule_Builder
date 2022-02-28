@@ -23,19 +23,22 @@ class Builder:
         self.fileIO = FileIO()
         (self.tutorDataList, self.athleteDataList) = self.fileIO.readFiles()
         # print(self.tutorList)
-
+        print(self.tutorDataList)
         # self._createLists()
         self.schedules = self._createSchedules()
         self.bestSchedule = self.getBestSchedule()
+
         self.showAppointments(self.bestSchedule)
         print(self.bestSchedule.score)
 
     def _createSchedules(self):
         schedules = []
-        for i in range(1000):
+        for i in range(1):
             # print(self.athleteList, "asd")
+            print(i)
             sch = Schedule( copy.deepcopy(self.athleteDataList), copy.deepcopy(self.tutorDataList), classrooms)
             sch.makeSchedule()
+
             schedules.append(sch)
         return schedules
 
