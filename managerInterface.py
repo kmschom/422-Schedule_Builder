@@ -51,10 +51,12 @@ class ManagerInterface:
             canvas = Canvas(self.root, width = 500, height = 400)
             canvas.pack()
             target = Entry(self.root)
+            targetName = target.get()
+
             canvas.create_window(250, 200, window=target)           # change from entry box to scroll dropdown list OR have auto-complete name from dynamic drop menu on familiar names
 
-            nameEntry = Button(text="Generate", command=None)           # tie command to necessary funct in builder/appointment?
-            canvas.create_window(250, 240, window=nameEntry)
+            findName = Button(text="Generate", command=None)           # tie command to necessary funct in builder/appointment?
+            canvas.create_window(250, 240, window=findName)
 
         else:
             print("no")
