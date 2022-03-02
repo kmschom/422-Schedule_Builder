@@ -1,20 +1,23 @@
 """
 Name: schedule.py
-Purpose: Schedule class to contain the information about an individual scheduling variation, along with the algorithm to fill itself.
+Purpose: Creates Schedule class to hold information on individual scheduling variations and run scheduling algorithms to
+build appointments.
 
 Creation Date: Feb. 12, 2022
-Last Updated: Feb. 19, 2022
+Last Updated: Mar. 1, 2022
 Authors: Mert Yapucuoğlu (my), Kelly Schombert (ks)
 
-schedule.py is part of the Schedule_Builder software.
+schedule.py is part of the All In a Week's Work (AWW) Schedule Building software which takes input on athlete and tutor
+availability and builds a schedule of tutoring appointments for the entire group.
 Called by:
-    builder.py -
+    builder.py - calls Schedule class 100 times to make and score multiple schedule iterations
 
 Modifications:
 Created file                    my 2/12/22
 Implemented required queue      ks, my 2/19/22
 Implemented optional queue      ks 2/23/22
-
+Implemented scoring system      my 2/24/22
+Code documentation              ks 3/1/22
 """
 
 from tutor import Tutor
