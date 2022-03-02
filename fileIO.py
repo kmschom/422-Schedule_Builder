@@ -145,46 +145,52 @@ class FileIO:
         # print(athlete_dict)
         return(tutor_dict, athlete_dict)
 
-    def writeCSV(appointments):
+    def writeSave(self,appointments):
+        appointment_f = "appointment.txt"
+        with open(appointment_f,"w") as f:
+            for i in range(0,len(appointments)):
+                output = str(appointments[i])
+                #f.write(output)
+                print(i)
+
+
+    def writeCSV(self,appointments):
         #add_cascade
         #a=2
 
         #write a text file with all of the apppointments by row
-        individual = "individual.csv"
         filename = "schedule.csv"
-        columns = ['Time','Monday','Tuesday','Wednesday','Thursday','Friday']
-        data = {}
-        col_num = 0
-
+        column = ['Time','Monday','Tuesday','Wednesday','Thursday','Friday']
+        data = []
+ 
         #writes a big file
         with open(filename,"w") as finalSchedule:
-            with open(individual, "w") as indivdualS:
-                for app in r_app:
+            for i in range(0,len(appointments)):
+                app = str(appointments[i]).split(" ")
+                #slips each line and assigns each element to variable
+                time = app[0]
+                day = app[1]
+                athlete = app[2]
+                subject = app[3]
+                tutor = app[4]
+                classroom = app[5]
 
-                    #slips each line and assigns each element to variable
-                    read_app = app.readline().slpit()
-                    time = read_app[0]
-                    day = read_app[1]
-                    athlete = read_app[2]
-                    subject = read_app[4]
-                    tutor = read_app[3]
-
-                    #assign the appointment to a certain day
-                    if (day == 0):
-                        col_num = 1
-                    elif (day == 1):
-                        col_num = 2
-                    elif (day == 2):
-                        col_num = 3
-                    elif (day == 3):
-                        col_num = 4
-                    elif (day == 4):
-                        col_num = 5
-                    data.update({column[0]:time,column[col_num]:[athlete,tutor,subject]})
+                #assign the appointment to a certain day
+                if (day == '0'):
+                    col_num = 1
+                elif (day == '1'):
+                    col_num = 2
+                elif (day == '2'):
+                    col_num = 3
+                elif (day == '3'):
+                    col_num = 4
+                elif (day == '4'):
+                    col_num = 5
+                data.append({column[0]:time,column[col_num]:[athlete,tutor,subject,classroom]})
                     
 
             #write into a file csv file
-            writer = csv.DictWriter(finalSchedule, fieldnames = columns)
+            writer = csv.DictWriter(finalSchedule, fieldnames = column)
 
             #writes the column names
             writer.writeheader()
@@ -192,16 +198,13 @@ class FileIO:
             #writes data into the rows
             writer.writerows(data)
 
+        #writeSave(appointments)
+        finalSchedule.close()
 
-        r_app.close()
-        appointment_f.close()
-        inndividual.close()
-        writeSave()
-
-    def writeSave(appointments):
-       #write a text file with all of the apppointments by row
+    def writeSave(self,appointments):
         appointment_f = "appointment.txt"
-        with open(appointment_f,"a"):
-            for app in appointments:
-                output = app+'\n'
-                appointment_list.write(output)
+        with open(appointment_f,"w") as f:
+            for i in range(0,len(appointments)):
+                output = str(appointments[i])
+                #f.write(output)
+                print(i)
