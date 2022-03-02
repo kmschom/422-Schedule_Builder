@@ -26,7 +26,6 @@ from queue import PriorityQueue
 
 class Schedule:
     def __init__(self, athleteDataList, tutorDataList, classrooms):
-        self.a = 0
         self.athleteList = []
         # print(athleteList)
         self.tutorList = []
@@ -119,7 +118,7 @@ class Schedule:
                                                         if (hours - 1 > 0):
                                                             ath.hoursLeft.append((sub, hours-1))
                                                         scheduled = True
-                                                        self.score+=1000
+                                                        self.score+=500
                                             if scheduled:
                                                 break
                                     if scheduled:

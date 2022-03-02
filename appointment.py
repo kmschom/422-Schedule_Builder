@@ -8,5 +8,5 @@ class Appointment:
         self.subject = subject
 
     def __repr__(self):
-        summary = str(self.time) + ' ' + str(self.day) + ' ' + str(self.athletes) + ' ' + self.subject + " " + str(self.tutor)
+        summary = str(self.time) + ' ' + str(self.day) + ' ' + str(self.athletes) + ' ' + self.subject + " " + str(self.tutor) + " " + str(self.classroom)
         return summary

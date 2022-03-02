@@ -52,7 +52,7 @@ class Builder:
         self.showAppointments(self.bestSchedule)
         return True
 
-    # def extractIndividual(self, name):
+    # def exportIndividual(self, name):
     #     individualApptList = []
     #     for appt in self.bestSchedule.appointments:
 
