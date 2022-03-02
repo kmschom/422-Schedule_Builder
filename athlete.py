@@ -1,3 +1,22 @@
+"""
+Name: athlete.py
+Purpose: ???
+
+Creation Date: Feb. 12, 2022
+Last Updated: Mar. 1, 2022
+Authors: ???
+
+athlete.py is part of the All In a Week's Work (AWW) Schedule Building software which takes input on athlete and tutor
+availability and builds a schedule of tutoring appointments for the entire group.
+Called by:
+    ???
+
+Modifications:
+Created file                    my 2/12/22
+???
+Code documentation              ks 3/1/22
+"""
+
 import random
 
 class Athlete:
@@ -39,6 +58,6 @@ class Athlete:
         while hoursLeft:
             for index,sub in enumerate(subjectHours):
                 subjectHours[index] = (sub[0], sub[1]+1)
-                hoursLeft-=1
-                
+            hoursLeft-=1
+
         return subjectHours

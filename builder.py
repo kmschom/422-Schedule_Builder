@@ -1,3 +1,21 @@
+"""
+Name: builder.py
+Purpose: ???
+
+Creation Date: Feb. 12, 2022
+Last Updated: Mar. 1, 2022
+Authors: ???
+
+builder.py is part of the All In a Week's Work (AWW) Schedule Building software which takes input on athlete and tutor
+availability and builds a schedule of tutoring appointments for the entire group.
+Called by:
+    ???
+
+Modifications:
+Created file                    my 2/12/22
+???
+Code documentation              ks 3/1/22
+"""
 
 from managerInterface import ManagerInterface
 from fileIO import FileIO
@@ -17,48 +35,46 @@ classrooms =[
 
 class Builder:
     def __init__(self):
-        self.a= 0
 
-        # self.UI = ManagerInterface(True,self.test)
-        self.fileIO = FileIO()
-        (self.tutorDataList, self.athleteDataList) = self.fileIO.readFiles()
-        # print(self.tutorList)
-
-        # self._createLists()
-        self.schedules = self._createSchedules()
-        self.bestSchedule = self.getBestSchedule()
-        self.showAppointments(self.bestSchedule)
-        print(self.bestSchedule.score)
+        self.tutorDataList = []
+        self.athleteDataList = []
+        self.schedules = []
+        self.bestSchedule = None
+        self.scheduleExists = False #Replace with file check function once done
+        self.UI = ManagerInterface(self.scheduleExists, self.signalSchedule)
 
     def _createSchedules(self):
-        schedules = []
-        for i in range(1000):
-            # print(self.athleteList, "asd")
+        for i in range(100):
             sch = Schedule( copy.deepcopy(self.athleteDataList), copy.deepcopy(self.tutorDataList), classrooms)
             sch.makeSchedule()
-            schedules.append(sch)
-        return schedules
-
-    def _createLists(self):
-        for tu in self.tutorDataList:
-            self.tutorList.append(Tutor(tu))
-
-        for ath in self.athleteDataList:
-            self.athleteList.append(Athlete(ath))
+            self.schedules.append(sch)
 
     def getBestSchedule(self):
-        bestSchedule = None
         bestScore = 0
         for sch in self.schedules:
             if sch.score > bestScore:
-                bestSchedule = sch
+                self.bestSchedule = sch
                 bestScore = sch.score
-        return bestSchedule
 
     def showAppointments(self, schedule):
         i = 0
         for appt in schedule.appointments:
             print(appt)
+
+    def signalSchedule(self, athletePath, tutorPath):
+        #POSSIBLY CHECK FOR VALIDITY
+        self.fileIO = FileIO()
+        (self.tutorDataList, self.athleteDataList) = self.fileIO.readFiles(athletePath,tutorPath)
+        self._createSchedules()
+        self.getBestSchedule()
+        self.fileIO.writeCSV(self.bestSchedule.appointments)
+        self.showAppointments(self.bestSchedule)
+        return True
+
+    # def exportIndividual(self, name):
+    #     individualApptList = []
+    #     for appt in self.bestSchedule.appointments:
+
 
 def main():
     builder = Builder()

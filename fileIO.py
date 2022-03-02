@@ -1,3 +1,22 @@
+"""
+Name: fileIO.py
+Purpose: ???
+
+Creation Date: Feb. 12, 2022
+Last Updated: Mar. 1, 2022
+Authors: ???
+
+fileIO.py is part of the All In a Week's Work (AWW) Schedule Building software which takes input on athlete and tutor
+availability and builds a schedule of tutoring appointments for the entire group.
+Called by:
+    ???
+
+Modifications:
+Created file                    my 2/12/22
+???
+Code documentation              ks 3/1/22
+"""
+
 """athleteList = [
 {"id": 123,
 "name": "thomas",
@@ -56,8 +75,11 @@ tutorList = [
 "hours": 20,
 },
 ]"""
+import csv
+import appointment
+
 class FileIO:
-    def readFiles(self):
+    def readFiles(self, athFilePath, tutFilePath):
         """This function reads the athlete and tutor csv files and
         writes the proper information for each athlete and tutor into
         their own dictionary. It then returns a list of dictionaries
@@ -71,7 +93,7 @@ class FileIO:
         tutor_dict = []
 
         # This section filters through the athlete list file called athlete.csv
-        with open(file1, 'r') as athletes_list:
+        with open(athFilePath, 'r') as athletes_list:
             # This takes the headings of athlete and puts them in a list.
             # Headings must be: "First Name,Last Name,ID,GPA,Year,Hours Wanted,Subjects,Availability" in this order.
             # Uppercase or lowercase doesn't matter
@@ -112,7 +134,7 @@ class FileIO:
                 athlete_dict.append(DictA)
 
         # This section filters through the tutor list file called tutor.csv
-        with open(file2, 'r') as tutor_list:
+        with open(tutFilePath, 'r') as tutor_list:
             # This takes the headings of tutor and puts them in a list.
             # Headings must be: "First Name,Last Name,ID,Hours Wanted,Subjects,Availability" in this order.
             # Uppercase or lowercase doesn't matter
@@ -142,6 +164,58 @@ class FileIO:
         # print(athlete_dict)
         return(tutor_dict, athlete_dict)
 
-    def writeCSV(schedules):
+
+    def writeCSV(self,appointments):
         #add_cascade
-        a=2
+        #a=2
+
+        #write a text file with all of the apppointments by row
+        filename = "schedule.csv"
+        column = ['Time','Monday','Tuesday','Wednesday','Thursday','Friday']
+        data = []
+ 
+        #writes a big file
+        with open(filename,"w") as finalSchedule:
+            for i in range(0,len(appointments)):
+                app = str(appointments[i]).split(" ")
+                #slips each line and assigns each element to variable
+                time = app[0]
+                day = app[1]
+                athlete = app[2]
+                subject = app[3]
+                tutor = app[4]
+                classroom = app[5]
+
+                #assign the appointment to a certain day
+                if (day == '0'):
+                    col_num = 1
+                elif (day == '1'):
+                    col_num = 2
+                elif (day == '2'):
+                    col_num = 3
+                elif (day == '3'):
+                    col_num = 4
+                elif (day == '4'):
+                    col_num = 5
+                data.append({column[0]:time,column[col_num]:[athlete,tutor,subject,classroom]})
+                    
+
+            #write into a file csv file
+            writer = csv.DictWriter(finalSchedule, fieldnames = column)
+
+            #writes the column names
+            writer.writeheader()
+
+            #writes data into the rows
+            writer.writerows(data)
+
+        #writeSave(appointments)
+        finalSchedule.close()
+
+    def writeSave(self,appointments):
+        appointment_f = "appointment.txt"
+        with open(appointment_f,"w") as f:
+            for i in range(0,len(appointments)):
+                output = str(appointments[i])
+                #f.write(output)
+                print(i)
