@@ -145,7 +145,7 @@ class FileIO:
         # print(athlete_dict)
         return(tutor_dict, athlete_dict)
 
-    def writeCSV(appointments,name):
+    def writeCSV(appointments):
         #add_cascade
         #a=2
 
@@ -155,7 +155,6 @@ class FileIO:
         columns = ['Time','Monday','Tuesday','Wednesday','Thursday','Friday']
         data = {}
         col_num = 0
-        individual_data = {}
 
         #writes a big file
         with open(filename,"w") as finalSchedule:
@@ -182,8 +181,7 @@ class FileIO:
                     elif (day == 4):
                         col_num = 5
                     data.update({column[0]:time,column[col_num]:[athlete,tutor,subject]})
-                    if athlete == name:
-                        individual.update({column[0]:time,column[col_num]:[athlete,tutor,subject]})
+                    
 
             #write into a file csv file
             writer = csv.DictWriter(finalSchedule, fieldnames = columns)
@@ -194,9 +192,6 @@ class FileIO:
             #writes data into the rows
             writer.writerows(data)
 
-            writer2 = csv.DictWriter(individualS, fieldnames = columns)
-            writer2.writeheader()
-            writer2.writerows(individual)
 
         r_app.close()
         appointment_f.close()

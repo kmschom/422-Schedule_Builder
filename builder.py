@@ -46,9 +46,10 @@ class Builder:
     def signalSchedule(self, athletePath, tutorPath):
         #POSSIBLY CHECK FOR VALIDITY
         self.fileIO = FileIO()
-        (self.tutorDataList, self.athleteDataList) = self.fileIO.readFiles()
+        (self.tutorDataList, self.athleteDataList) = self.fileIO.readFiles(athletePath,tutorPath)
         self._createSchedules()
         self.getBestSchedule()
+        self.fileIO.writeCSV(self.bestSchedule.appointments)
         self.showAppointments(self.bestSchedule)
         return True
 
