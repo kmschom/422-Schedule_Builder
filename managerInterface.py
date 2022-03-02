@@ -1,3 +1,5 @@
+from calendar import c
+from platform import architecture, release
 import sched
 from tkinter import *
 from tkinter import filedialog
@@ -5,39 +7,62 @@ from tkinter import messagebox
 import os
 from os.path import exists
 from tkinter import simpledialog
+from xml.dom.expatbuilder import FragmentBuilder
+from xml.dom.minidom import ReadOnlySequentialNamedNodeMap
 
 class ManagerInterface:
-    def __init__(self, scheduleExists, signalSchedule):
+    def __init__(self, scheduleExists, signalSchedule, mainFrame):
+        """Init type shit idk"""
         self.scheduleExists = scheduleExists
         self.signalSchedule = signalSchedule
+        self.mainFrame = None
+
         self._createDisplay()
 
     def _createDisplay(self):
         #Initialize tkinter window and set its properties
+
+        """Window Setup"""
         self.root = Tk()
+        self.root.title("Insret cool scheduler name here")
         self.root.geometry("1260x640")
         self.root.minsize(1260,640)
         self.root.maxsize(1260,640)
+        # self.root.configure(bg="green")                                   # Frames take up whole root display, so bg defined there
+        self.root.grid_propagate(False)                                     # Not entirely sure what this does; saw it on a lot of examples
 
-        '''Menu Setup'''
+        '''File Menu Setup'''
         menubar = Menu(self.root)
+                # menubar = Menu(self.root, font=("Helvetica", 20))         # font doesnt change anything
         self.root.config(menu=menubar)
-        file_menu = Menu(menubar, tearoff=False)
-        file_menu.add_command(
-            label='Import Lists',
+        fileMenu = Menu(menubar, tearoff=False)
+        #Import File
+        fileMenu.add_command(
+            label='Import Files',
             command=lambda:self.importAction(),
         )
-        # file_menu.add_separator()
-        # file_menu.add_command(
-        #     label='Exit',
-        #     # command=root.destroy,
-        #     command=lambda:on_closing(),
-        # )   
+
+        #User Documentation
+
+        #Programmer Documentation
+
+        #Separator/Exit
+        fileMenu.add_separator()
+        fileMenu.add_command(
+            label='Exit',
+            # command=root.destroy,
+            # command=lambda:on_closing(),
+            command=lambda:self.root.destroy()
+        )
+   
+        #Cascade Functionality
         menubar.add_cascade(
             label="File",
-            menu=file_menu,
+            menu=fileMenu,
             underline=0
         )
+
+        #Update
         self._updateDisplay()
     
 
@@ -46,24 +71,66 @@ class ManagerInterface:
         #tkinter window
 
         if self.scheduleExists:
-            print("yes")
+            """Schedule Found"""
+            #Frame
+            self.mainFrame = Frame(self.root, width=1260, height=640, bg="green")
+            self.mainFrame.grid(row=0, column=0)
+            self.mainFrame["borderwidth"] = 5
+            self.mainFrame.pack()
 
-            canvas = Canvas(self.root, width = 500, height = 400)
-            canvas.pack()
-            target = Entry(self.root)
+            #Image (Optional)
+
+            #Label
+            yesLabel = Label(self.mainFrame, text = "Schedule Found: Please Enter a Name Below", bg="white", fg="black", font=("Helvetica", 30))        
+            yesLabel["highlightbackground"] = "yellow"
+            yesLabel["highlightthickness"] = 3
+            yesLabel["relief"] = "groove"
+            yesLabel.place(relx=.5, rely=.4, anchor="center")
+
+            #timeLabel
+
+            #Canvas
+            canvas = Canvas(self.mainFrame, width=300, height=30)
+            canvas.place(relx=.45, rely=.6, anchor="center")
+
+            #Entry
+            target = Entry(self.mainFrame, font=("Helvetica", 15))
             targetName = target.get()
+            canvas.create_window(150, 15, width=300, height=30, anchor="center" , window=target)        #Entry window is slightly smaller than canvas
 
-            canvas.create_window(250, 200, window=target)           # change from entry box to scroll dropdown list OR have auto-complete name from dynamic drop menu on familiar names
-
-            findName = Button(text="Generate", command=None)           # tie command to necessary funct in builder/appointment?
-            canvas.create_window(250, 240, window=findName)
+            #Button
+            yesButton = Button(text="Generate", font=("Helvetica", 13) ,command=None)                   # change None to proper command
+            yesButton.place(relx=.62, rely=.6, anchor="center")
 
         else:
-            print("no")
+            """No Schedule Found"""                                                                     #Possibly instead of everything contained in 1 big frame, could instead have a unique frame for each widget
+            #Frame
+            self.mainFrame = Frame(self.root, width=1260, height=640, bg="green")                       #or just replace noFrame call w self.root
+            self.mainFrame.grid(row=0, column=0)
+            self.mainFrame["borderwidth"] = 5
+            self.mainFrame.pack()
+    
+            # #Image
+            # imageFrame = Frame(noFrame, width=200, height=200)
+            # img = PhotoImage(file="images/UO_logo.jpg")
+            # noImage = Label(imageFrame, image=img)
+            # noImage.place(relx=.5, rely=.2, anchor="center")
 
-            noLabel = Label(self.root, text = "No schedule found: To create a schedule, please navigate to\n File -> Import Files ", bg = None, fg = "black", font = ("Arial", 30))  # make font size dynamic relative to window size
-            noLabel.place(x = 70, y = 90)
-            # noLabel.pack()
+            #Label
+            noLabel = Label(self.mainFrame, text = "No schedule found: To create a schedule, please navigate to\n File -> Import Files", bg="white", fg="black", font=("Helvetica", 30))        
+            noLabel["highlightbackground"] = "yellow"
+            noLabel["highlightthickness"] = 5
+            noLabel["relief"] = "groove"
+            noLabel.place(relx=.5, rely=.4, anchor="center")
+
+            #Button
+            noButton = Button(text="Import Files", font=("Helvetica", 20) ,command=lambda:self.importAction())
+            noButton["highlightbackground"] = "yellow"      # not adding border atm?
+            noButton["highlightthickness"] = 5
+            noButton["relief"] = "groove"
+            noButton.place(relx=.5, rely=.6, anchor="center")
+
+            #Status
 
         print("updated")
         self.root.mainloop()
@@ -75,12 +142,17 @@ class ManagerInterface:
     def importAction(self):
         '''Obtain a user-selected file for import'''
         if messagebox.askokcancel("Import", "Please select the necessary files in the following order:\n 1) Athlete List\n 2) Tutor List"):
-
             file1 = filedialog.askopenfilename()
-            # filename = os.path.basename(file1)
-            # print(file1)
-            file2 = filedialog.askopenfilename()
-            self._startScheduling(file1, file2)
+            if file1:
+                file2 = filedialog.askopenfilename()
+                if file2:
+                    # self._startScheduling(file1, file2)
+                    self.scheduleExists = True
+                    self.frameDestroy()
+                    self._updateDisplay()
+        #Success Message box
 
+    def frameDestroy(self):
+        self.mainFrame.destroy()
 
-call = ManagerInterface(True, False)
+call = ManagerInterface(False, False, None)
