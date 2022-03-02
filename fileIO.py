@@ -164,14 +164,6 @@ class FileIO:
         # print(athlete_dict)
         return(tutor_dict, athlete_dict)
 
-    def writeSave(self,appointments):
-        appointment_f = "appointment.txt"
-        with open(appointment_f,"w") as f:
-            for i in range(0,len(appointments)):
-                output = str(appointments[i])
-                #f.write(output)
-                print(i)
-
 
     def writeCSV(self,appointments):
         #add_cascade
