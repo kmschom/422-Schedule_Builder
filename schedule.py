@@ -244,6 +244,7 @@ class Schedule:
                 ath.hours += decimals[x]/ 1000
                 decimals.remove(decimals[x])
                 rangee -= 1
+                # print(ath.name, ath.lastname)
                 optQ.put((1 / ath.hours, ath, ath.hours))
         # while not optQ.empty():
         #    next_item = optQ.get()

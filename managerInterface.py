@@ -32,14 +32,14 @@ class ManagerInterface:
         #     label='Exit',
         #     # command=root.destroy,
         #     command=lambda:on_closing(),
-        # )   
+        # )
         menubar.add_cascade(
             label="File",
             menu=file_menu,
             underline=0
         )
         self._updateDisplay()
-    
+
 
     def _updateDisplay(self):
         #Will be called by inside code to delete everything and re-add them to
@@ -70,7 +70,8 @@ class ManagerInterface:
 
     def _startScheduling(self, filePath1, filePath2):
         #Will be called when the file input is done
-        self.signalSchedule(filePath1, filePath2)
+        self.scheduleExists = self.signalSchedule(filePath1, filePath2)
+        self._updateDisplay()
 
     def importAction(self):
         '''Obtain a user-selected file for import'''
@@ -81,6 +82,3 @@ class ManagerInterface:
             # print(file1)
             file2 = filedialog.askopenfilename()
             self._startScheduling(file1, file2)
-
-
-call = ManagerInterface(True, False)

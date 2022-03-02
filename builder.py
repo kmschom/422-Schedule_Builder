@@ -17,51 +17,45 @@ classrooms =[
 
 class Builder:
     def __init__(self):
-        self.a= 0
 
-        # self.UI = ManagerInterface(True,self.test)
-        self.fileIO = FileIO()
-        (self.tutorDataList, self.athleteDataList) = self.fileIO.readFiles()
-        # print(self.tutorList)
-        print(self.tutorDataList)
-        # self._createLists()
-        self.schedules = self._createSchedules()
-        self.bestSchedule = self.getBestSchedule()
-
-        self.showAppointments(self.bestSchedule)
-        print(self.bestSchedule.score)
+        self.tutorDataList = []
+        self.athleteDataList = []
+        self.schedules = []
+        self.bestSchedule = None
+        self.scheduleExists = False #Replace with file check function once done
+        self.UI = ManagerInterface(self.scheduleExists, self.signalSchedule)
 
     def _createSchedules(self):
-        schedules = []
-        for i in range(1):
-            # print(self.athleteList, "asd")
-            print(i)
+        for i in range(100):
             sch = Schedule( copy.deepcopy(self.athleteDataList), copy.deepcopy(self.tutorDataList), classrooms)
             sch.makeSchedule()
-
-            schedules.append(sch)
-        return schedules
-
-    def _createLists(self):
-        for tu in self.tutorDataList:
-            self.tutorList.append(Tutor(tu))
-
-        for ath in self.athleteDataList:
-            self.athleteList.append(Athlete(ath))
+            self.schedules.append(sch)
 
     def getBestSchedule(self):
-        bestSchedule = None
         bestScore = 0
         for sch in self.schedules:
             if sch.score > bestScore:
-                bestSchedule = sch
+                self.bestSchedule = sch
                 bestScore = sch.score
-        return bestSchedule
 
     def showAppointments(self, schedule):
         i = 0
         for appt in schedule.appointments:
             print(appt)
+
+    def signalSchedule(self, athletePath, tutorPath):
+        #POSSIBLY CHECK FOR VALIDITY
+        self.fileIO = FileIO()
+        (self.tutorDataList, self.athleteDataList) = self.fileIO.readFiles()
+        self._createSchedules()
+        self.getBestSchedule()
+        self.showAppointments(self.bestSchedule)
+        return True
+
+    # def extractIndividual(self, name):
+    #     individualApptList = []
+    #     for appt in self.bestSchedule.appointments:
+
 
 def main():
     builder = Builder()

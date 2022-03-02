@@ -57,7 +57,7 @@ tutorList = [
 },
 ]"""
 class FileIO:
-    def readFiles(self):
+    def readFiles(self, athFilePath = "bigAth.csv", tutFilePath = "bigTut.csv"):
         """This function reads the athlete and tutor csv files and
         writes the proper information for each athlete and tutor into
         their own dictionary. It then returns a list of dictionaries
@@ -65,15 +65,14 @@ class FileIO:
         # make the file names and initialize the heading and rows list
         # file1 = "athlete.csv"
         # file2 = "tutor.csv"
-        file1 = "bigAth.csv"
-        file2 = "bigTut.csv"
+
         headingsA = []
         athlete_dict = []
         headingsT = []
         tutor_dict = []
 
         # This section filters through the athlete list file called athlete.csv
-        with open(file1, 'r') as athletes_list:
+        with open(athFilePath, 'r') as athletes_list:
             # This takes the headings of athlete and puts them in a list.
             # Headings must be: "First Name,Last Name,ID,GPA,Year,Hours Wanted,Subjects,Availability" in this order.
             # Uppercase or lowercase doesn't matter
@@ -114,7 +113,7 @@ class FileIO:
                 athlete_dict.append(DictA)
 
         # This section filters through the tutor list file called tutor.csv
-        with open(file2, 'r') as tutor_list:
+        with open(tutFilePath, 'r') as tutor_list:
             # This takes the headings of tutor and puts them in a list.
             # Headings must be: "First Name,Last Name,ID,Hours Wanted,Subjects,Availability" in this order.
             # Uppercase or lowercase doesn't matter
