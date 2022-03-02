@@ -10,7 +10,7 @@ Authors: Mert Yapucuoğlu (my), Kelly Schombert (ks)
 schedule.py is part of the All In a Week's Work (AWW) Schedule Building software which takes input on athlete and tutor
 availability and builds a schedule of tutoring appointments for the entire group.
 Called by:
-    builder.py - calls Schedule class 100 times to make and score multiple schedule iterations
+    builder.py - calls Schedule class 100 times within _createSchedules to make and score multiple schedule iterations
 
 Modifications:
 Created file                    my 2/12/22
@@ -20,74 +20,76 @@ Implemented scoring system      my 2/24/22
 Code documentation              ks 3/1/22
 """
 
-from tutor import Tutor
-from athlete import Athlete
-from appointment import Appointment
-import random
-from queue import PriorityQueue
+from tutor import Tutor  # calls Tutor class to build tutor objects and add to tutorList
+from athlete import Athlete  # calls Athlete class to build athlete objects and add to athleteList
+from appointment import Appointment  # calls Appointment class to build and schedule appointment objects
+import random  # used to determine athlete placement in priority queues
+from queue import PriorityQueue  # calls PriorityQueue class to build required and optional athlete queues
 
 
+# Schedule class; holds functions to create tutor and athlete lists, make priority queues, and run both scheduling algorithms
 class Schedule:
+    # initializes Schedule attributes passed to class from builder._createSchedules
     def __init__(self, athleteDataList, tutorDataList, classrooms):
-        self.athleteList = []
-        # print(athleteList)
-        self.tutorList = []
+        self.athleteList = []  # list of athlete objects; initialized as empty
+        self.tutorList = []  # list of tutor objects; initialized as empty
         self._createLists(athleteDataList, tutorDataList)
-        self.classrooms = classrooms
-        self.score = 0
-        self.required = self._createRequired()
-        self.optional = self._createOptional()
-        self.appointments = []
-        self.score = 0
+        self.classrooms = classrooms  # list of classrooms
+        self.score = 0  # schedule's effectiveness score; initialized as empty
+        self.required = self._createRequired()  # queue of required hours; initialized with createRequired function
+        self.optional = self._createOptional()  # queue of optional hours; initialized with createOptional function
+        self.appointments = []  # list of appointment objects made; initialized as empty
 
-
+    # takes list of athlete and tutor data, processes data into Athlete and Tutor objects and appends to athleteList and tutorList
     def _createLists(self, athleteDataList, tutorDataList):
         for tu in tutorDataList:
             self.tutorList.append(Tutor(tu))
 
         for ath in athleteDataList:
             self.athleteList.append(Athlete(ath))
-        # print("lengths are", (self.athleteList[0].availability))
 
+    # calls scheduling algorithms and returns resulting schedule effectiveness score
     def makeSchedule(self):
         self._scheduleRequired()
         self._scheduleOptional()
-        # print(self.required)
         return self.score
 
+    # scheduling algorithm to schedule all required athlete hours
     def _scheduleRequired(self):
-        # print("I'M HERE\n")
-        # print(self.required)
+        # while there are required athlete hours to be scheduled as individual appointments
         while not self.required.empty():
-            # print("In queue\n")
-            scheduled = False
-            currentDay = 0
-            ath = self.required.get()[1]
-            # print(ath)
+            scheduled = False  # indicator that athlete hasn't been scheduled on this pass; intialized as False
+            currentDay = 0  # tracks the day being scheduled on; initialized as 0 referring to Monday
+            ath = self.required.get()[1]  # holder for athlete object currently at top of priority queue
+            # while this athlete's schedule is incomplete
             while not scheduled:
-                # print("In scheduled\n")
-                # print(ath.availability)
-                availability = ath.availability[currentDay]
+                availability = ath.availability[currentDay]  # list of athlete's available hours based on currentDay
+                # look at every hour in athlete's availability list
                 for time in availability:
-                    for (sub,hours) in ath.hoursLeft:
+                    # look at remaining hours needed for each subject
+                    for (sub, hours) in ath.hoursLeft:
+                        # if there are hours needing to be scheduled
                         if hours > 0:
+                            # look at each tutor on tutorList
                             for tut in self.tutorList:
+                                # if subject in tutor's list of offered subjects
                                 if sub in tut.subjects:
+                                    # if tutor is available at time in question
+                                    # create Appointment object, update availability hours and schedule score
                                     if time in tut.availability[currentDay]:
                                         self.appointments.append(
                                             Appointment((time, currentDay), tut, ath, sub, self.classrooms[0]))
-                                        # print("Made an appt\n")
                                         ath.hours -= 1
+                                        # if athlete has remaining hour(s) to schedule, reinsert to priority queue
                                         if ath.hours > 1:
                                             self.required.put((1 / ath.hours, ath, ath.hours))
                                         ath.availability[currentDay].remove(time)
                                         tut.availability[currentDay].remove(time)
-                                        ath.hoursLeft.remove((sub,hours))
-                                        self.score+=1000
+                                        ath.hoursLeft.remove((sub, hours))
+                                        self.score += 1000
+                                        # if subject has remaining hour(s) to schedule, reinsert to list
                                         if (hours - 1 > 0):
-                                            ath.hoursLeft.append((sub, hours-1))
-
-
+                                            ath.hoursLeft.append((sub, hours - 1))
                                         scheduled = True
                                 if scheduled:
                                     break
@@ -96,32 +98,44 @@ class Schedule:
                     if scheduled:
                         break
 
+                # increment to look at next day of the week
                 if currentDay < 4:
                     currentDay += 1
+                # if all days of week have been looked at for individual appointments
                 else:
                     currentDay = 0
+                    # while this athlete's schedule is incomplete
                     while not scheduled:
                         availability = ath.availability[currentDay]
-                        # check for existing appointments
+                        # look at all existing appointments on schedule
                         for appt in self.appointments:
+                            # if appointments occur on currentDay
                             if currentDay == appt.day:
+                                # look at every hour in athlete's availability list
                                 for time in availability:
+                                    # if athlete is available at same time as an existing appointment
                                     if time == appt.time:
-                                        for sub,hours in ath.hoursLeft:
-                                            if hours> 0:
+                                        # look at remaining hours needed for each subject
+                                        for sub, hours in ath.hoursLeft:
+                                            # if there are hours needing to be scheduled
+                                            if hours > 0:
+                                                # if subject matches the appointment's subject
                                                 if sub == appt.subject:
+                                                    # if there are less than 3 athletes already in the appointment
+                                                    # add athlete to appointment, update athlete availability and schedule score
                                                     if len(appt.athletes) < 3:
                                                         appt.athletes.append(ath)
-                                                        # print("Added athlete to an appointment\n")
                                                         ath.hours -= 1
+                                                        # if athlete has remaining hour(s) to schedule, reinsert to priority queue
                                                         if ath.hours > 1:
                                                             self.required.put((1 / ath.hours, ath, ath.hours))
                                                         ath.availability[currentDay].remove(time)
-                                                        ath.hoursLeft.remove((sub,hours))
+                                                        ath.hoursLeft.remove((sub, hours))
+                                                        # if subject has remaining hour(s) to schedule, reinsert to list
                                                         if (hours - 1 > 0):
-                                                            ath.hoursLeft.append((sub, hours-1))
+                                                            ath.hoursLeft.append((sub, hours - 1))
                                                         scheduled = True
-                                                        self.score+=500
+                                                        self.score += 500
                                             if scheduled:
                                                 break
                                     if scheduled:
@@ -129,126 +143,147 @@ class Schedule:
                             if scheduled:
                                 break
 
+                        # increment to look at next day of the week
                         if currentDay < 4:
                             currentDay += 1
+                        # as many required athlete hours as possible have been scheduled
                         else:
                             break
                     break
-        # print(self.appointments, len(self.appointments))
 
+    # scheduling algorithm to schedule all optional athlete hours
     def _scheduleOptional(self):
-        # print("In optional scheduling\n")
-        # print(self.optional)
+        # while there are required athlete hours to be scheduled as individual appointments
         while not self.optional.empty():
-            scheduled = False
-            currentDay = 0
-            ath = self.optional.get()[1]
-            # print(ath)
+            scheduled = False  # indicator that athlete hasn't been scheduled on this pass; initialized as False
+            currentDay = 0  # tracks the day being scheduled on; initialized as 0 referring to Monday
+            ath = self.optional.get()[1]  # holder for athlete object currently at top of priority queue
+            # while this athlete's schedule is incomplete
             while not scheduled:
-                # print("In scheduled\n")
-                # print(ath.availability)
-                availability = ath.availability[currentDay]
+                availability = ath.availability[currentDay]  # list of athlete's available hours based on currentDay
+                # look at every hour in athlete's availability list
                 for time in availability:
-                    for (sub,hours) in ath.hoursLeft:
+                    # look at remaining hours needed for each subject
+                    for (sub, hours) in ath.hoursLeft:
+                        # if there are hours needing to be scheduled
                         if hours > 0:
+                            # look at each tutor on tutorList
                             for tut in self.tutorList:
+                                # if subject in tutor's list of offered subjects
                                 if sub in tut.subjects:
+                                    # if tutor is available at time in question
+                                    # create Appointment object, update availability hours and schedule score
                                     if time in tut.availability[currentDay]:
-                                        self.appointments.append(Appointment((time, currentDay), tut, ath, sub, self.classrooms[0]))
-                                        # print("Made an appt\n")
+                                        self.appointments.append(
+                                            Appointment((time, currentDay), tut, ath, sub, self.classrooms[0]))
                                         ath.hours -= 1
+                                        # if athlete has remaining hour(s) to schedule, reinsert to priority queue
                                         if ath.hours > 1:
                                             self.optional.put((1 / ath.hours, ath, ath.hours))
                                         ath.availability[currentDay].remove(time)
                                         tut.availability[currentDay].remove(time)
-                                        ath.hoursLeft.remove((sub,hours))
+                                        ath.hoursLeft.remove((sub, hours))
+                                        # if subject has remaining hour(s) to schedule, reinsert to list
                                         if (hours - 1 > 0):
-                                            ath.hoursLeft.append((sub, hours-1))
+                                            ath.hoursLeft.append((sub, hours - 1))
                                         scheduled = True
-                                        self.score +=1
+                                        self.score += 1
                                 if scheduled:
                                     break
                         if scheduled:
                             break
                     if scheduled:
                         break
+
+                # increment to look at next day of the week
                 if currentDay < 4:
                     currentDay += 1
+                # if all days of week have been looked at for individual appointments
                 else:
                     currentDay = 0
+                    # while this athlete's schedule is incomplete
                     while not scheduled:
                         availability = ath.availability[currentDay]
-                        # check for existing appointments
+                        # look at all existing appointments on schedule
                         for appt in self.appointments:
+                            # if appointments occur on currentDay
                             if currentDay == appt.day:
+                                # look at every hour in athlete's availability list
                                 for time in availability:
+                                    # if athlete is available at same time as an existing appointment
                                     if time == appt.time:
-                                        for sub,hours in ath.hoursLeft:
+                                        # look at remaining hours needed for each subject
+                                        for sub, hours in ath.hoursLeft:
+                                            # look at remaining hours needed for each subject
                                             if hours > 0:
+                                                # if subject matches the appointment's subject
                                                 if sub == appt.subject:
+                                                    # if there are less than 3 athletes already in the appointment
+                                                    # add athlete to appointment, update athlete availability and schedule score
                                                     if len(appt.athletes) < 3:
                                                         appt.athletes.append(ath)
                                                         # print("Added athlete to an appointment\n")
                                                         ath.hours -= 1
+                                                        # if athlete has remaining hour(s) to schedule, reinsert to priority queue
                                                         if ath.hours > 1:
                                                             self.optional.put((1 / ath.hours, ath, ath.hours))
                                                         ath.availability[currentDay].remove(time)
                                                         scheduled = True
                                                         self.score += 1
-                                                        ath.hoursLeft.remove((sub,hours))
+                                                        ath.hoursLeft.remove((sub, hours))
+                                                        # if subject has remaining hour(s) to schedule, reinsert to list
                                                         if (hours - 1 > 0):
-                                                            ath.hoursLeft.append((sub, hours-1))
+                                                            ath.hoursLeft.append((sub, hours - 1))
                                             if scheduled:
                                                 break
                                     if scheduled:
                                         break
                             if scheduled:
                                 break
+
+                        # increment to look at next day of the week
                         if currentDay < 4:
                             currentDay += 1
+                        # as many required athlete hours as possible have been scheduled
                         else:
                             break
                     break
-        # print(self.appointments, len(self.appointments))
 
+    # Creates priority queue of athlete hours that must be scheduled
     def _createRequired(self):
-        # Create prio queue
-
-        decimals = []
+        decimals = []  # list of values used to determine athlete place in queue; initialized as empty
+        # creates a list of 1000 numbers to be chosen randomly from
         for i in range(1000):
             decimals.append(i)
-        rangee = 999
-        reqQ = PriorityQueue()
+        rangee = 999  # upper bound to random list index range; decremented with each athlete on queue
+        reqQ = PriorityQueue()  # priority queue to order athlete objects
+        # for each athlete in athleteList, give priority value based on hours needed and random decimal value
         for ath in self.athleteList:
+            # add only required athlete hours to required priority queue
             if ath.required:
-                # print(ath)
-                x = (random.randint(0, rangee))
-                ath.hours += decimals[x]/ 1000
+                x = (random.randint(0, rangee))  # randomly chosen list index
+                ath.hours += decimals[x] / 1000
                 decimals.remove(decimals[x])
                 rangee -= 1
                 reqQ.put((1 / ath.hours, ath, ath.hours))
-        # while not reqQ.empty():
-        #     next_item = reqQ.get()
-        #     print(next_item)
         return reqQ
 
+    # Creates priority queue of athlete hours that might be scheduled
     def _createOptional(self):
-        # Create prio queue
-        decimals = []
+        # Create priority queue
+        decimals = []  # list of values used to determine athlete place in queue; initialized as empty
+        # creates a list of 1000 numbers to be chosen randomly from
         for i in range(1000):
             decimals.append(i)
-        rangee = 999
-        optQ = PriorityQueue()
+        rangee = 999  # upper bound to random list index range; decremented with each athlete on queue
+        optQ = PriorityQueue()  # priority queue to order athlete objects
+        # for each athlete in athleteList, give priority value based on hours needed and random decimal value
         for ath in self.athleteList:
+            # add only non-required athlete hours to optional priority queue
             if not ath.required:
-                # print(ath)
-                x = (random.randint(0, rangee))
-                ath.hours += decimals[x]/ 1000
+                x = (random.randint(0, rangee))  # randomly chosen list index
+                ath.hours += decimals[x] / 1000
                 decimals.remove(decimals[x])
                 rangee -= 1
-                # print(ath.name, ath.lastname)
                 optQ.put((1 / ath.hours, ath, ath.hours))
-        # while not optQ.empty():
-        #    next_item = optQ.get()
-        #    print(next_item)
         return optQ
