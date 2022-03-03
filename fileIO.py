@@ -133,8 +133,7 @@ class FileIO:
             tutorTester = "first name,last name,id,hours wanted,subjects,availability"
             lheadT = headingsT.lower().strip()
             # if tutorTester != lheadT:
-            #     print("ERROR")
-            #     return
+            #     return 0
             """------------TESTING HEADINGS TUTOR END------------"""
 
             # This splits each tutor's info
@@ -184,7 +183,27 @@ class FileIO:
 
 
     def readSave(self):
-        return
+        """This reads the appointment.txt file and writes the proper information for each appointment into
+                their own dictionary. It then returns a list of dictionaries."""
+
+        appt_dict = []  # holds the dictionary of appointments
+
+        # This opens and reads the appointment file
+        with open("attempt.txt", "r") as file:
+            # This splits the appointment info from the .txt file
+            for row in file:
+                temp = row.split(" ")                       # a list of information collected from file
+                day = int(temp[1])                          # Sets the day into an int value
+                time = int(temp[0])                         # Sets the time into an int value
+                athlete = temp[2].strip("[]").split(",")    # Makes the string list of athletes into a list
+                room = int(temp[5].strip())                 # Makes the room into an int
+
+                # Makes a dictionary for each appointment and appends it into a list
+                DictApp = {"day": day, "time": time, "athlete": athlete, "subject": temp[3], "tutor": temp[4],
+                           "room": room}  # Makes the appointment dictionaries
+                appt_dict.append(DictApp)
+
+        return appt_dict
 
     def writeSave(self,appointments):
         appointment_f = "appointment.txt"
