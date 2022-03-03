@@ -164,6 +164,13 @@ class FileIO:
         # print(athlete_dict)
         return(tutor_dict, athlete_dict)
 
+    def writeSave(self,appointments):
+        appointment_f = "appointment.txt"
+        with open(appointment_f,"w") as app_file:
+            for i in range(0,len(appointments)):
+                output = str(appointments[i])
+                app_file.write(output)
+                app_file.write('\n')
 
     def writeCSV(self,appointments):
         #add_cascade
@@ -209,13 +216,25 @@ class FileIO:
             #writes data into the rows
             writer.writerows(data)
 
-        #writeSave(appointments)
+        self.writeSave(appointments)
+        self.individualSchedule(appointments,"Brianna")
         finalSchedule.close()
 
-    def writeSave(self,appointments):
-        appointment_f = "appointment.txt"
-        with open(appointment_f,"w") as f:
+    '''def individualSchedule(self,appointments,name):
+        column = ['Time','Monday','Tuesday','Wednesday','Thursday','Friday']
+        mySchedule = []
+        filename = "mySchedule.csv"
+        with open(filename,"w") as mySchedule:
             for i in range(0,len(appointments)):
-                output = str(appointments[i])
-                #f.write(output)
-                print(i)
+                app = str(appointments[i]).split(" ")
+                if app[2]==name:
+                    mySchedule.append({column[0]:app[0],app[1]:[name,app[4],app[3],app[5]]})
+            #write into a file csv file
+            writer = csv.DictWriter(mySchedule, fieldnames = column)
+
+            #writes the column names
+            writer.writeheader()
+
+            #writes data into the rows
+            writer.writerows(mySchedule)'''
+
