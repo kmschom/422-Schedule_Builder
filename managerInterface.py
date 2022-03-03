@@ -11,11 +11,12 @@ from xml.dom.expatbuilder import FragmentBuilder
 from xml.dom.minidom import ReadOnlySequentialNamedNodeMap
 
 class ManagerInterface:
-    def __init__(self, scheduleExists, signalSchedule, mainFrame):
+    def __init__(self, scheduleExists, signalSchedule, mainFrame, exportIndividual):
         """Init type shit idk"""
         self.scheduleExists = scheduleExists
         self.signalSchedule = signalSchedule
         self.mainFrame = None
+        self.exportIndividual = exportIndividual
 
         self._createDisplay()
 
@@ -54,7 +55,7 @@ class ManagerInterface:
             # command=lambda:on_closing(),
             command=lambda:self.root.destroy()
         )
-   
+
         #Cascade Functionality
         menubar.add_cascade(
             label="File",
@@ -64,7 +65,7 @@ class ManagerInterface:
 
         #Update
         self._updateDisplay()
-    
+
 
     def _updateDisplay(self):
         #Will be called by inside code to delete everything and re-add them to
@@ -81,7 +82,7 @@ class ManagerInterface:
             #Image (Optional)
 
             #Label
-            yesLabel = Label(self.mainFrame, text = "Schedule Found: Please Enter a Name Below", bg="white", fg="black", font=("Helvetica", 30))        
+            yesLabel = Label(self.mainFrame, text = "Schedule Found: Please Enter a Name Below", bg="white", fg="black", font=("Helvetica", 30))
             yesLabel["highlightbackground"] = "yellow"
             yesLabel["highlightthickness"] = 3
             yesLabel["relief"] = "groove"
@@ -94,12 +95,11 @@ class ManagerInterface:
             canvas.place(relx=.45, rely=.6, anchor="center")
 
             #Entry
-            target = Entry(self.mainFrame, font=("Helvetica", 15))
-            targetName = target.get()
-            canvas.create_window(150, 15, width=300, height=30, anchor="center" , window=target)        #Entry window is slightly smaller than canvas
+            self.nameInputBox = Entry(self.mainFrame, font=("Helvetica", 15))
+            canvas.create_window(150, 15, width=300, height=30, anchor="center" , window=self.nameInputBox)        #Entry window is slightly smaller than canvas
 
             #Button
-            yesButton = Button(text="Generate", font=("Helvetica", 13) ,command=None)                   # change None to proper command
+            yesButton = Button(text="Generate", font=("Helvetica", 13) ,command=self.generateIndividual)                   # change None to proper command
             yesButton.place(relx=.62, rely=.6, anchor="center")
 
         else:
@@ -109,7 +109,7 @@ class ManagerInterface:
             self.mainFrame.grid(row=0, column=0)
             self.mainFrame["borderwidth"] = 5
             self.mainFrame.pack()
-    
+
             # #Image
             # imageFrame = Frame(noFrame, width=200, height=200)
             # img = PhotoImage(file="images/UO_logo.jpg")
@@ -117,7 +117,7 @@ class ManagerInterface:
             # noImage.place(relx=.5, rely=.2, anchor="center")
 
             #Label
-            noLabel = Label(self.mainFrame, text = "No schedule found: To create a schedule, please navigate to\n File -> Import Files", bg="white", fg="black", font=("Helvetica", 30))        
+            noLabel = Label(self.mainFrame, text = "No schedule found: To create a schedule, please navigate to\n File -> Import Files", bg="white", fg="black", font=("Helvetica", 30))
             noLabel["highlightbackground"] = "yellow"
             noLabel["highlightthickness"] = 5
             noLabel["relief"] = "groove"
@@ -137,7 +137,10 @@ class ManagerInterface:
 
     def _startScheduling(self, filePath1, filePath2):
         #Will be called when the file input is done
-        self.signalSchedule(filePath1, filePath2)
+        self.scheduleExists = self.signalSchedule(filePath1, filePath2)
+        self.frameDestroy()
+        self._updateDisplay()
+        #Success Message box
 
     def importAction(self):
         '''Obtain a user-selected file for import'''
@@ -146,13 +149,12 @@ class ManagerInterface:
             if file1:
                 file2 = filedialog.askopenfilename()
                 if file2:
-                    # self._startScheduling(file1, file2)
-                    self.scheduleExists = True
-                    self.frameDestroy()
-                    self._updateDisplay()
-        #Success Message box
+                    self._startScheduling(file1, file2)
+
+    def generateIndividual(self):
+        requestedName = self.nameInputBox.get()
+        self.exportIndividual(requestedName)
+
 
     def frameDestroy(self):
         self.mainFrame.destroy()
-
-call = ManagerInterface(False, False, None)

@@ -41,10 +41,10 @@ class Builder:
         self.schedules = []
         self.bestSchedule = None
         self.scheduleExists = False #Replace with file check function once done
-        self.UI = ManagerInterface(self.scheduleExists, self.signalSchedule)
+        self.UI = ManagerInterface(self.scheduleExists, self.signalSchedule, None, self.exportIndividual)
 
     def _createSchedules(self):
-        for i in range(100):
+        for i in range(1):
             sch = Schedule( copy.deepcopy(self.athleteDataList), copy.deepcopy(self.tutorDataList), classrooms)
             sch.makeSchedule()
             self.schedules.append(sch)
@@ -71,9 +71,10 @@ class Builder:
         self.showAppointments(self.bestSchedule)
         return True
 
-    # def exportIndividual(self, name):
-    #     individualApptList = []
-    #     for appt in self.bestSchedule.appointments:
+    def exportIndividual(self, name):
+        individualApptList = []
+        print(name)
+        # for appt in self.bestSchedule.appointments:
 
 
 def main():
