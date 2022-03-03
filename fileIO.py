@@ -239,16 +239,35 @@ class FileIO:
         self.writeSave(appointments)
         self.individualSchedule(appointments,"Brianna")
         finalSchedule.close()
-
-    '''def individualSchedule(self,appointments,name):
+    def individualSchedule(self,appointments,name):
         column = ['Time','Monday','Tuesday','Wednesday','Thursday','Friday']
         mySchedule = []
         filename = "mySchedule.csv"
         with open(filename,"w") as mySchedule:
             for i in range(0,len(appointments)):
                 app = str(appointments[i]).split(" ")
-                if app[2]==name:
-                    mySchedule.append({column[0]:app[0],app[1]:[name,app[4],app[3],app[5]]})
+                name_doc = str(app[2])[:-1][1:]
+                time = str(app[0])
+                day = str(app[1])
+                athlete = name
+                subject = str(app[3])
+                tutor = str(app[4])
+                classroom = str(app[5])
+
+                #assign the appointment to a certain day
+                if (day == '0'):
+                    col_num = 1
+                elif (day == '1'):
+                    col_num = 2
+                elif (day == '2'):
+                    col_num = 3
+                elif (day == '3'):
+                    col_num = 4
+                elif (day == '4'):
+                    col_num = 5
+
+                if str(name_doc)==str(name):
+                    mySchedule.append({column[0]:time,column[col_num]:[athlete,tutor,subject,classroom]})
             #write into a file csv file
             writer = csv.DictWriter(mySchedule, fieldnames = column)
 
@@ -256,5 +275,5 @@ class FileIO:
             writer.writeheader()
 
             #writes data into the rows
-            writer.writerows(mySchedule)'''
+            writer.writerows(mySchedule)
 
