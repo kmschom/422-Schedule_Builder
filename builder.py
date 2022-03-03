@@ -71,7 +71,7 @@ class Builder:
         self.getBestSchedule()
         self.showAppointments(self.bestSchedule)
         self.fileIO.writeCSV(self.bestSchedule.appointments)
-
+        #self.fileIO.individualSchedule(self.bestSchedule.appointments,self.exportIndividual)
         return True
 
     def exportIndividual(self, name):

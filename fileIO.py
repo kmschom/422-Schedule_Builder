@@ -23,6 +23,7 @@ Implemented readSave function     bv 3/3/22
 
 import csv
 import appointment
+import pandas as pd
 
 class FileIO:
     def readFiles(self, athFilePath, tutFilePath):
@@ -237,12 +238,17 @@ class FileIO:
             #writes data into the rows
             writer.writerows(data)
 
+        sort = pd.read_csv("schedule.csv")
+        sd = sort.sort_values(by=["Time","Monday","Tuesday","Wednesday","Thursday","Friday"],ascending =True)
+        sd.to_csv("schedule.csv",index=False)
+
+        self.individualSchedule(appointments,"Rowley")
         self.writeSave(appointments)
-        self.individualSchedule(appointments,"Brianna")
         finalSchedule.close()
+
     def individualSchedule(self,appointments,name):
         column = ['Time','Monday','Tuesday','Wednesday','Thursday','Friday']
-        mySchedule = []
+        mine = []
         filename = "mySchedule.csv"
         with open(filename,"w") as mySchedule:
             for i in range(0,len(appointments)):
@@ -268,7 +274,7 @@ class FileIO:
                     col_num = 5
 
                 if str(name_doc)==str(name):
-                    mySchedule.append({column[0]:time,column[col_num]:[athlete,tutor,subject,classroom]})
+                    mine.append({column[0]:time,column[col_num]:" ".join([tutor,subject,classroom])})
             #write into a file csv file
             writer = csv.DictWriter(mySchedule, fieldnames = column)
 
@@ -276,4 +282,7 @@ class FileIO:
             writer.writeheader()
 
             #writes data into the rows
-            writer.writerows(mySchedule)
+            writer.writerows(mine)
+        sort = pd.read_csv("mySchedule.csv")
+        sd = sort.sort_values(by=["Time","Monday","Tuesday","Wednesday","Thursday","Friday"],ascending =True)
+        sd.to_csv("mySchedule.csv",index=False)
