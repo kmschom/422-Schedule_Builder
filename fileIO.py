@@ -1,80 +1,26 @@
 """
 Name: fileIO.py
-Purpose: ???
+Purpose: To read and interpret the files that are imported into the system as well as write the schedules that want to
+be exported.
 
 Creation Date: Feb. 12, 2022
 Last Updated: Mar. 1, 2022
-Authors: ???
+Authors: Mert Yapucuoğlu (my), Brianna Vago (bv), Kassandra Morando (km)
 
 fileIO.py is part of the All In a Week's Work (AWW) Schedule Building software which takes input on athlete and tutor
 availability and builds a schedule of tutoring appointments for the entire group.
 Called by:
-    ???
+    builder.py -
 
 Modifications:
-Created file                    my 2/12/22
-???
-Code documentation              ks 3/1/22
+Created file                      my 2/12/22
+Implemented readFiles function    bv 2/23/22
+Implemented writeCSV function     km
+Code title documentation          ks 3/1/22
+Implemented writeSave function    km
+Implemented readSave function     bv 3/3/22
 """
 
-"""athleteList = [
-{"id": 123,
-"name": "thomas",
-"lastname": "schombert",
-"availability": [[10,11], [13,15], [10,11], [13,15], [16,17,18]],
-"subjects": ["math", "econ"],
-"hours": 8,
-"required": True
-},
-
-{"id": 124,
-"name": "mert",
-"lastname": "yapucuoglu",
-"availability": [[9,10], [16,17], [9,10], [16,17], [11,12]],
-"subjects": ["trolling", "methodology"],
-"hours": 2,
-"required": False
-},
-
-{"id": 125,
-"name": "brianna",
-"lastname": "vago",
-"availability": [[12,13], [7,8], [12,13], [7,8], [5,6]],
-"subjects": ["math", "volleyball"],
-"hours": 4,
-"required": True
-},
-#
-# {"id": ,
-# "name": "",
-# "lastname": "",
-# "availability": [],
-# "subjects": [],
-# "hours": [],
-# "required": True
-# },
-#
-# {"id": ,
-# "name": "",
-# "lastname": "",
-# "availability": [],
-# "subjects": [],
-# "hours": [],
-# "required": True
-# },
-
-
-]
-
-tutorList = [
-{"id": 123,
-"name": "kelly",
-"lastname": "schombert",
-"availability": [[10, 12, 13], [13, 16, 8, 17, 7, 15], [10, 11, 13, 12], [13, 16, 8, 17, 15], [16, 12, 6, 18, 11, 5]],
-"subjects": ["trolling", "methodology","econ","volleyball"],
-"hours": 20,
-},
-]"""
 import csv
 import appointment
 
@@ -84,29 +30,68 @@ class FileIO:
         writes the proper information for each athlete and tutor into
         their own dictionary. It then returns a list of dictionaries
         for the athletes and for the tutors"""
-        # make the file names and initialize the heading and rows list
-        file1 = "athlete.csv"
-        file2 = "tutor.csv"
-        headingsA = []
-        athlete_dict = []
-        headingsT = []
-        tutor_dict = []
 
-        # This section filters through the athlete list file called athlete.csv
+        """------------TESTING FILE OPEN START------------"""
+        try:
+            testfile1 = open(athFilePath)
+            testfile2 = open(tutFilePath)
+        except IOError:
+            return 0
+        """------------TESTING FILE OPEN END------------"""
+
+        headingsA = []      # holds the headings of the athlete file to check if file contents hold all information
+        athlete_dict = []   # holds the dictionary of athletes
+        headingsT = []      # holds the headings of the tutor file to check if file contents hold all information
+        tutor_dict = []     # holds the dictionary of tutors
+
+        # This section filters through the athlete list file which is file1
         with open(athFilePath, 'r') as athletes_list:
             # This takes the headings of athlete and puts them in a list.
-            # Headings must be: "First Name,Last Name,ID,GPA,Year,Hours Wanted,Subjects,Availability" in this order.
-            # Uppercase or lowercase doesn't matter
             headingsA = athletes_list.readline()
+
+            """------------TESTING HEADINGS ATHLETE START------------"""
+            # Headings must be: "First Name,Last Name,ID,GPA,Year,Hours Wanted,Subjects,Availability" in this order.
+            athleteTester = "first name,last name,id,gpa,year,hours wanted,subjects,availability"
+            lheadA = headingsA.lower().strip()
+            if athleteTester != lheadA:
+                return 0
+            """------------TESTING HEADINGS ATHLETE END------------"""
 
             # This splits each athlete's info and sets required to false
             for row in athletes_list:
-                temp = row.split(",")
-                temp[6] = temp[6].split(" ")
-                temp[7] = temp[7].strip().split("/")
-                req = False
+                temp = row.split(",")                   # a list of information collected from file
+                temp[6] = temp[6].split(" ")            # Classes
+                temp[7] = temp[7].strip().split("/")    # Availability
+                req = False                             # Boolean that says if hours are required or not
+
+                """------------TESTING NAME START------------"""
+                testerFirst = temp[0].isalpha()
+                testerLast = temp[1].isalpha()
+                if testerLast is False or testerFirst is False:
+                    return 0
+                """------------TESTING NAME END------------"""
+
+                """------------TESTING GPA, YEAR, ID, HOURS START------------"""
+                try:
+                    float(temp[3])  # GPA
+                    float(temp[4])  # Year
+                    float(temp[2])  # ID
+                    float(temp[5])  # Hours
+                except ValueError:
+                    return 0
+                if 0 >= float(temp[3]) or float(temp[3]) > 4:
+                    # Check GPA input
+                    return 0
+                if 0 >= float(temp[4]) or float(temp[4]) >= 4:
+                    # Check Year input
+                    return 0
+                if float(temp[5]) >= 8:
+                    # Check Hour input
+                    return 0
+                """------------TESTING GPA, YEAR, ID, HOURS END------------"""
 
                 # Required testing for when to set to true
+                # True if gpa is 2.99 or below.
                 if float(temp[3]) <= 2.29 or float(temp[4]) == 1:
                     temp[5] = '8'
                     req = True
@@ -118,9 +103,12 @@ class FileIO:
                     req = True
 
                 # This makes the availability list of lists
-                extra = []
-                day = 0
-                week = [[], [], [], [], []]
+                extra = []                       # used to make week list, time of each day will be placed here
+                day = 0                          # day of the week
+                week = [[], [], [], [], []]      # availability list for a whole week
+
+                # This makes the availability a list of lists by adding each available
+                # time into a week list
                 for item in temp[7]:
                     if len(item) != 0:
                         extra = item.split(" ")
@@ -130,26 +118,54 @@ class FileIO:
 
                 # This makes the athletes dictionary and appends it into a long list of dictionaries
                 DictA = {"id": int(temp[2]), "name": temp[0], "lastname": temp[1],
-                         "availability": week, "subjects": temp[6], "hours": int(temp[5]), "required": req}
+                         "availability": week, "subjects": temp[6], "hours": int(temp[5]), "required": req}     # Dictionary of one athlete
                 athlete_dict.append(DictA)
 
         # This section filters through the tutor list file called tutor.csv
         with open(tutFilePath, 'r') as tutor_list:
             # This takes the headings of tutor and puts them in a list.
-            # Headings must be: "First Name,Last Name,ID,Hours Wanted,Subjects,Availability" in this order.
-            # Uppercase or lowercase doesn't matter
             headingsT = tutor_list.readline()
+
+            """------------TESTING HEADINGS TUTOR START------------"""
+            # Headings must be: "First Name,Last Name,ID,Hours Wanted,Subjects,Availability" in this order.
+            tutorTester = "first name,last name,id,hours wanted,subjects,availability"
+            lheadT = headingsT.lower().strip()
+            if tutorTester != lheadT:
+                print("ERROR")
+                return
+            """------------TESTING HEADINGS TUTOR END------------"""
 
             # This splits each tutor's info
             for row in tutor_list:
-                temp = row.split(",")
-                temp[4] = temp[4].split(" ")
-                temp[5] = temp[5].strip().split("/")
+                temp = row.split(",")                   # a list of information collected from file
+                temp[4] = temp[4].split(" ")            # Classes
+                temp[5] = temp[5].strip().split("/")    # Availability
+
+                """------------TESTING NAME START------------"""
+                testerFirst = temp[0].isalpha()
+                testerLast = temp[1].isalpha()
+                if testerLast is False or testerFirst is False:
+                    return 0
+                """------------TESTING NAME END------------"""
+
+                """------------TESTING ID, HOURS START------------"""
+                try:
+                    float(temp[2])  # ID
+                    float(temp[3])  # Hours
+                except ValueError:
+                    return 0
+                if float(temp[3]) >= 25:
+                    # Check Hour input
+                    return 0
+                """------------TESTING ID, HOURS END------------"""
 
                 # This makes the availability list of lists
-                extra = []
-                day = 0
-                week = [[], [], [], [], []]
+                extra = []                      # used to make week list, time of each day will be placed here
+                day = 0                         # day of the week
+                week = [[], [], [], [], []]     # availability list for a whole week
+
+                # This makes the availability a list of lists by adding each available
+                # time into a week list
                 for item in temp[5]:
                     if len(item) != 0:
                         extra = item.split(" ")
@@ -159,10 +175,14 @@ class FileIO:
 
                 # This makes the tutors dictionary and appends it into a long list of dictionaries
                 DictB = {"id": int(temp[2]), "name": temp[0], "lastname": temp[1], "availability": week,
-                         "subjects": temp[4], "hours": int(temp[3])}
+                         "subjects": temp[4], "hours": int(temp[3])}    # Dictionary of one tutor
                 tutor_dict.append(DictB)
-        # print(athlete_dict)
+
         return(tutor_dict, athlete_dict)
+
+
+    def readSave(self):
+        return
 
     def writeSave(self,appointments):
         appointment_f = "appointment.txt"
