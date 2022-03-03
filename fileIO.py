@@ -58,7 +58,7 @@ class FileIO:
             """------------TESTING HEADINGS ATHLETE END------------"""
 
             # This splits each athlete's info and sets required to false
-            for row in athletes_list:
+            for index,row in enumerate(athletes_list):
                 temp = row.split(",")                   # a list of information collected from file
                 temp[6] = temp[6].split(" ")            # Classes
                 temp[7] = temp[7].strip().split("/")    # Availability
@@ -67,8 +67,8 @@ class FileIO:
                 """------------TESTING NAME START------------"""
                 testerFirst = temp[0].isalpha()
                 testerLast = temp[1].isalpha()
-                if testerLast is False or testerFirst is False:
-                    return 0
+                # if testerLast is False or testerFirst is False:
+                #     return 1
                 """------------TESTING NAME END------------"""
 
                 """------------TESTING GPA, YEAR, ID, HOURS START------------"""
@@ -78,16 +78,17 @@ class FileIO:
                     float(temp[2])  # ID
                     float(temp[5])  # Hours
                 except ValueError:
-                    return 0
+                    return 2
                 if 0 >= float(temp[3]) or float(temp[3]) > 4:
                     # Check GPA input
-                    return 0
-                if 0 >= float(temp[4]) or float(temp[4]) >= 4:
+                    return 3
+                if 0 >= float(temp[4]) or float(temp[4]) > 4:
                     # Check Year input
-                    return 0
+                    print("index:",index)
+                    return 4
                 if float(temp[5]) >= 8:
                     # Check Hour input
-                    return 0
+                    temp[5] = 8
                 """------------TESTING GPA, YEAR, ID, HOURS END------------"""
 
                 # Required testing for when to set to true
@@ -130,9 +131,9 @@ class FileIO:
             # Headings must be: "First Name,Last Name,ID,Hours Wanted,Subjects,Availability" in this order.
             tutorTester = "first name,last name,id,hours wanted,subjects,availability"
             lheadT = headingsT.lower().strip()
-            if tutorTester != lheadT:
-                print("ERROR")
-                return
+            # if tutorTester != lheadT:
+            #     print("ERROR")
+            #     return
             """------------TESTING HEADINGS TUTOR END------------"""
 
             # This splits each tutor's info
@@ -145,7 +146,7 @@ class FileIO:
                 testerFirst = temp[0].isalpha()
                 testerLast = temp[1].isalpha()
                 if testerLast is False or testerFirst is False:
-                    return 0
+                    return 6
                 """------------TESTING NAME END------------"""
 
                 """------------TESTING ID, HOURS START------------"""
@@ -153,10 +154,10 @@ class FileIO:
                     float(temp[2])  # ID
                     float(temp[3])  # Hours
                 except ValueError:
-                    return 0
+                    return 7
                 if float(temp[3]) >= 25:
                     # Check Hour input
-                    return 0
+                    temp[3] = 25
                 """------------TESTING ID, HOURS END------------"""
 
                 # This makes the availability list of lists
@@ -200,7 +201,7 @@ class FileIO:
         filename = "schedule.csv"
         column = ['Time','Monday','Tuesday','Wednesday','Thursday','Friday']
         data = []
- 
+
         #writes a big file
         with open(filename,"w") as finalSchedule:
             for i in range(0,len(appointments)):
@@ -225,7 +226,7 @@ class FileIO:
                 elif (day == '4'):
                     col_num = 5
                 data.append({column[0]:time,column[col_num]:[athlete,tutor,subject,classroom]})
-                    
+
 
             #write into a file csv file
             writer = csv.DictWriter(finalSchedule, fieldnames = column)
@@ -276,4 +277,3 @@ class FileIO:
 
             #writes data into the rows
             writer.writerows(mySchedule)
-

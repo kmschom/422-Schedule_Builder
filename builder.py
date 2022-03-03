@@ -64,11 +64,14 @@ class Builder:
     def signalSchedule(self, athletePath, tutorPath):
         #POSSIBLY CHECK FOR VALIDITY
         self.fileIO = FileIO()
+        print(athletePath, tutorPath)
         (self.tutorDataList, self.athleteDataList) = self.fileIO.readFiles(athletePath,tutorPath)
+        # print(self.fileIO.readFiles(athletePath,tutorPath))
         self._createSchedules()
         self.getBestSchedule()
-        self.fileIO.writeCSV(self.bestSchedule.appointments)
         self.showAppointments(self.bestSchedule)
+        self.fileIO.writeCSV(self.bestSchedule.appointments)
+
         return True
 
     def exportIndividual(self, name):
