@@ -248,7 +248,7 @@ class FileIO:
                 #assigning the individual appointment details to a variable
                 time = app[0]
                 day = app[1]
-                athlete = app[2]
+                athlete = str(app[2])[:-1][1:]
                 subject = app[3]
                 tutor = app[4]
                 classroom = app[5]
@@ -266,7 +266,7 @@ class FileIO:
                     col_num = 5
 
                 #appends the appointment details in a dictionary to the data list 
-                data.append({column[0]:time,column[col_num]:[athlete,tutor,subject,classroom]})
+                data.append({column[0]:time,column[col_num]:", ".join([athlete,tutor,subject,classroom])})
 
 
             #write into a file csv file
@@ -336,7 +336,7 @@ class FileIO:
                 if str(name_doc)==str(name):
 
                     #appending a dictionary that consists of the time and appointment details
-                    mine.append({column[0]:time,column[col_num]:" ".join([tutor,subject,classroom])})
+                    mine.append({column[0]:time,column[col_num]:", ".join([tutor,subject,classroom])})
 
             #write into a file csv file
             writer = csv.DictWriter(mySchedule, fieldnames = column)
