@@ -68,7 +68,7 @@ class Builder:
 
 
         (self.errorLog, self.tutorDataList, self.athleteDataList) = self.fileIO.readFiles(athletePath,tutorPath)
-        print(self.errorLog,self.tutorDataList, self.athleteDataList)
+        # print(self.errorLog,self.tutorDataList, self.athleteDataList)
 
         if len(self.errorLog) == 2:
             return (False, self.errorLog[1])
@@ -78,7 +78,7 @@ class Builder:
 
         self._createSchedules()
         self.getBestSchedule()
-        self.showAppointments(self.bestSchedule)
+        # self.showAppointments(self.bestSchedule)
         self.fileIO.writeCSV(self.bestSchedule.appointments)
         #self.fileIO.individualSchedule(self.bestSchedule.appointments)
         return (True, None)

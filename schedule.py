@@ -41,8 +41,14 @@ class Schedule:
         self.appointments = []  # list of appointment objects made; initialized as empty
         self.athIndividualAppointments = {} # a dictionary to keep track of each athlete's appointments
         self.tutIndividualAppointments = {} # a dictionary to keep track of each tutor's appointments
-        self.classroomDailyIndex = [[0] * 24] * 5
-        print(self.classroomDailyIndex)
+        self.classroomDailyIndex = []
+        for i in range(5):
+            asd = []
+            for j in range(24):
+                asd.append(0)
+            self.classroomDailyIndex.append(asd)
+
+        # print(self.classroomDailyIndex)
 
     # takes list of athlete and tutor data, processes data into Athlete and Tutor objects and appends to athleteList and tutorList
     def _createLists(self, athleteDataList, tutorDataList):
@@ -85,7 +91,7 @@ class Schedule:
                                         location = "zoom"
 
                                         if self.classroomDailyIndex[currentDay][time]+1 == len(self.classrooms):
-                                            print(self.classroomDailyIndex[currentDay][time])
+                                            # print(self.classroomDailyIndex[currentDay][time])
                                             location = "zoom"
                                         else:
                                             location = self.classrooms[self.classroomDailyIndex[currentDay][time]]
