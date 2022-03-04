@@ -299,7 +299,7 @@ class FileIO:
         column = ['Time','Monday','Tuesday','Wednesday','Thursday','Friday']
         mine = [] #initializes the list that goes into a row in the csv
         filename = "mySchedule.csv" #names the csv file
-
+        #print(str(name))
         #opens and writes into a csv file
         with open(filename,"w") as mySchedule:
 

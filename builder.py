@@ -71,13 +71,14 @@ class Builder:
         self.getBestSchedule()
         self.showAppointments(self.bestSchedule)
         self.fileIO.writeCSV(self.bestSchedule.appointments)
-        #self.fileIO.individualSchedule(self.bestSchedule.appointments,self.exportIndividual)
+        #self.fileIO.individualSchedule(self.bestSchedule.appointments)
         return True
 
     def exportIndividual(self, name):
-        individualApptList = []
-        print(name)
-        # for appt in self.bestSchedule.appointments:
+        #individualApptList = []
+        #print(name)
+        # for appt in self.bestSchedule.appointments 
+        self.fileIO.individualSchedule(self.bestSchedule.appointments,name)
 
 
 def main():
