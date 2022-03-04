@@ -27,7 +27,7 @@ import random  # used to determine athlete placement in priority queues
 from queue import PriorityQueue  # calls PriorityQueue class to build required and optional athlete queues
 
 
-# Schedule class; holds functions to create tutor and athlete lists, make priority queues, and run both scheduling algorithms
+# Schedule class; holds functions to create tutor and athlete lists, makes priority queues, and runs both scheduling algorithms
 class Schedule:
     # initializes Schedule attributes passed to class from builder._createSchedules
     def __init__(self, athleteDataList, tutorDataList, classrooms):
