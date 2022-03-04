@@ -17,7 +17,7 @@ class ManagerInterface:
         self.signalSchedule = signalSchedule
         self.mainFrame = None
         self.exportIndividual = exportIndividual
-
+        self.statusMessage = "No schedule found: To create a schedule, please navigate to\n File -> Import Files"
         self._createDisplay()
 
     def _createDisplay(self):
@@ -117,7 +117,7 @@ class ManagerInterface:
             # noImage.place(relx=.5, rely=.2, anchor="center")
 
             #Label
-            noLabel = Label(self.mainFrame, text = "No schedule found: To create a schedule, please navigate to\n File -> Import Files", bg="white", fg="black", font=("Helvetica", 30))
+            noLabel = Label(self.mainFrame, text = self.statusMessage, bg="white", fg="black", font=("Helvetica", 30))
             noLabel["highlightbackground"] = "yellow"
             noLabel["highlightthickness"] = 5
             noLabel["relief"] = "groove"
@@ -137,7 +137,7 @@ class ManagerInterface:
 
     def _startScheduling(self, filePath1, filePath2):
         #Will be called when the file input is done
-        self.scheduleExists = self.signalSchedule(filePath1, filePath2)
+        (self.scheduleExists, self.statusMessage) = self.signalSchedule(filePath1, filePath2)
         self.frameDestroy()
         self._updateDisplay()
         #Success Message box

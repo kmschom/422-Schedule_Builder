@@ -56,6 +56,8 @@ class Athlete:
                     subjectHours.append((sub,1))
                     hoursLeft -= 1
         while hoursLeft:
+            if len(self.subjects) == 0:
+                break
             for index,sub in enumerate(subjectHours):
                 subjectHours[index] = (sub[0], sub[1]+1)
             hoursLeft-=1
