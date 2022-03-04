@@ -15,10 +15,12 @@ Called by:
 Modifications:
 Created file                      my 2/12/22
 Implemented readFiles function    bv 2/23/22
-Implemented writeCSV function     km
+Implemented writeCSV function     km 3/3/22
+Implemented individualSchedule    km 3/2/22
 Code title documentation          ks 3/1/22
-Implemented writeSave function    km
+Implemented writeSave function    km 2/26/22
 Implemented readSave function     bv 3/3/22
+Code documentation                km,bv
 """
 
 import csv
@@ -205,28 +207,45 @@ class FileIO:
 
         return appt_dict
 
+    #writes a text file with all of apppointments from a list
     def writeSave(self,appointments):
+        #assigns a variable to a text file
         appointment_f = "appointment.txt"
+
+        # opens and writes to the text file
         with open(appointment_f,"w") as app_file:
+
+            #loops through appointments list
             for i in range(0,len(appointments)):
+
+                #assigns output to a string of a row in appointments
                 output = str(appointments[i])
+
+                #writes output and new line to the text file
                 app_file.write(output)
                 app_file.write('\n')
 
+    #write a csv of all the appointments for the week using a list of appointments
     def writeCSV(self,appointments):
-        #add_cascade
-        #a=2
-
-        #write a text file with all of the apppointments by row
+        
+        #assigns filename to a csv file
         filename = "schedule.csv"
-        column = ['Time','Monday','Tuesday','Wednesday','Thursday','Friday']
-        data = []
 
-        #writes a big file
+        #elements that are needed for the first row of the csv file
+        column = ['Time','Monday','Tuesday','Wednesday','Thursday','Friday']
+
+        data = [] #initialize the data list
+
+        #opens and writes to the schedule.csv
         with open(filename,"w") as finalSchedule:
+
+            #loops through a list of appointments
             for i in range(0,len(appointments)):
+
+                #assign app to a row in a list of appointments that is split by a space
                 app = str(appointments[i]).split(" ")
-                #slips each line and assigns each element to variable
+
+                #assigning the individual appointment details to a variable
                 time = app[0]
                 day = app[1]
                 athlete = app[2]
@@ -245,6 +264,8 @@ class FileIO:
                     col_num = 4
                 elif (day == '4'):
                     col_num = 5
+
+                #appends the appointment details in a dictionary to the data list 
                 data.append({column[0]:time,column[col_num]:[athlete,tutor,subject,classroom]})
 
 
@@ -257,22 +278,41 @@ class FileIO:
             #writes data into the rows
             writer.writerows(data)
 
+        #reads the csv file made
         sort = pd.read_csv("schedule.csv")
-        sd = sort.sort_values(by=["Time","Monday","Tuesday","Wednesday","Thursday","Friday"],ascending =True)
-        sd.to_csv("schedule.csv",index=False)
 
-        self.individualSchedule(appointments,"Rowley")
+        #assigns sd to the csv sorted by the time and day
+        sd = sort.sort_values(by=["Time","Monday","Tuesday","Wednesday","Thursday","Friday"],ascending =True)
+        
+        #writes the sorted file back into mySchedule.csv
+        sd.to_csv("schedule.csv",index=False)
+        
+        #calls writeSave to create an appointment text file
         self.writeSave(appointments)
+
+        #closes the file that was opened and written into
         finalSchedule.close()
 
+    #writes a csv file of appointments for an individual athlete for the week using a list of appointments and an individuals name
     def individualSchedule(self,appointments,name):
+        #elements that are needed for the first row of the csv file
         column = ['Time','Monday','Tuesday','Wednesday','Thursday','Friday']
-        mine = []
-        filename = "mySchedule.csv"
+        mine = [] #initializes the list that goes into a row in the csv
+        filename = "mySchedule.csv" #names the csv file
+
+        #opens and writes into a csv file
         with open(filename,"w") as mySchedule:
+
+            #reads each element of appointments list
             for i in range(0,len(appointments)):
+                
+                #splits the row in appointment to be different elements
                 app = str(appointments[i]).split(" ")
+
+                #assigns name_doc to the second element in the row and getting only the name
                 name_doc = str(app[2])[:-1][1:]
+                
+                #assigning the individual appointment details to a variable
                 time = str(app[0])
                 day = str(app[1])
                 athlete = name
@@ -292,16 +332,29 @@ class FileIO:
                 elif (day == '4'):
                     col_num = 5
 
+                #if the name is the same as the second element in the ith row of appointment
                 if str(name_doc)==str(name):
+
+                    #appending a dictionary that consists of the time and appointment details
                     mine.append({column[0]:time,column[col_num]:" ".join([tutor,subject,classroom])})
+
             #write into a file csv file
             writer = csv.DictWriter(mySchedule, fieldnames = column)
 
             #writes the column names
             writer.writeheader()
 
-            #writes data into the rows
+            #writes the mine list into the rows
             writer.writerows(mine)
+
+        #reads the csv file made
         sort = pd.read_csv("mySchedule.csv")
+        
+        #assigns sd to the csv sorted by the time and day  
         sd = sort.sort_values(by=["Time","Monday","Tuesday","Wednesday","Thursday","Friday"],ascending =True)
+        
+        #writes the sorted file back into mySchedule.csv
         sd.to_csv("mySchedule.csv",index=False)
+
+        #closes the file that was opened
+        mySchedule.close()
