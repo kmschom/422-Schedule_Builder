@@ -26,6 +26,8 @@ Code documentation                km,bv
 import csv
 import appointment
 import pandas as pd
+from datetime import date
+
 
 class FileIO:
     def readFiles(self, athFilePath, tutFilePath):
@@ -34,12 +36,25 @@ class FileIO:
         their own dictionary. It then returns a list of dictionaries
         for the athletes and for the tutors"""
 
+        errorLog = [date.today()]
+
+        """------------TESTING FILE EXTENSIONS------------"""
+        if athFilePath[-3:] != "csv" or tutFilePath[-3:] != "csv":
+            errorLog.append("ERROR! Files need to be in .csv format")
+            return (errorLog,None,None)
+
         """------------TESTING FILE OPEN START------------"""
         try:
             testfile1 = open(athFilePath)
+        except IOError:
+            errorLog.append("ERROR! Cannot open athlete file")
+            return (errorLog,None,None)
+
+        try:
             testfile2 = open(tutFilePath)
         except IOError:
-            return 0
+            errorLog.append("ERROR! Cannot open tutor file")
+            return (errorLog,None,None)
         """------------TESTING FILE OPEN END------------"""
 
         headingsA = []      # holds the headings of the athlete file to check if file contents hold all information
@@ -57,7 +72,9 @@ class FileIO:
             athleteTester = "first name,last name,id,gpa,year,hours wanted,subjects,availability"
             lheadA = headingsA.lower().strip()
             if athleteTester != lheadA:
-                return 0
+                errorLog.append("ERROR! Athete file headers are wrong")
+                return (errorLog,None,None)
+
             """------------TESTING HEADINGS ATHLETE END------------"""
 
             # This splits each athlete's info and sets required to false
@@ -70,8 +87,8 @@ class FileIO:
                 """------------TESTING NAME START------------"""
                 testerFirst = temp[0].isalpha()
                 testerLast = temp[1].isalpha()
-                # if testerLast is False or testerFirst is False:
-                #     return 1
+                if testerLast is False or testerFirst is False:
+                    errorLog.append(f"Invalid name format at line {index+1} of athlete file")
                 """------------TESTING NAME END------------"""
 
                 """------------TESTING GPA, YEAR, ID, HOURS START------------"""
@@ -81,14 +98,16 @@ class FileIO:
                     float(temp[2])  # ID
                     float(temp[5])  # Hours
                 except ValueError:
-                    return 2
+                    errorLog.append(f"Invalid GPA/YEAR/ID/HOUR format at line {index+1} of athlete file")
+
                 if 0 >= float(temp[3]) or float(temp[3]) > 4:
                     # Check GPA input
-                    return 3
+                    errorLog.append(f"GPA can't below 0 ar above 4. {index+1} of athlete file")
+
                 if 0 >= float(temp[4]) or float(temp[4]) > 4:
                     # Check Year input
-                    print("index:",index)
-                    return 4
+                    errorLog.append(f"Year can't below 0 ar above 4. {index+1} of athlete file")
+
                 if float(temp[5]) >= 8:
                     # Check Hour input
                     temp[5] = 8
@@ -147,8 +166,10 @@ class FileIO:
                 """------------TESTING NAME START------------"""
                 testerFirst = temp[0].isalpha()
                 testerLast = temp[1].isalpha()
+
                 if testerLast is False or testerFirst is False:
-                    return 6
+                    errorLog.append(f"Invalid name format at line {index+1} of tutor file")
+
                 """------------TESTING NAME END------------"""
 
                 """------------TESTING ID, HOURS START------------"""
@@ -156,7 +177,8 @@ class FileIO:
                     float(temp[2])  # ID
                     float(temp[3])  # Hours
                 except ValueError:
-                    return 7
+                    errorLog.append(f"Invalid ID/HOUR format at line {index+1} of tutor file")
+
                 if float(temp[3]) >= 25:
                     # Check Hour input
                     temp[3] = 25
@@ -181,7 +203,7 @@ class FileIO:
                          "subjects": temp[4], "hours": int(temp[3])}    # Dictionary of one tutor
                 tutor_dict.append(DictB)
 
-        return(tutor_dict, athlete_dict)
+        return (errorLog, tutor_dict, athlete_dict)
 
 
     def readSave(self):
@@ -227,7 +249,7 @@ class FileIO:
 
     #write a csv of all the appointments for the week using a list of appointments
     def writeCSV(self,appointments):
-        
+
         #assigns filename to a csv file
         filename = "schedule.csv"
 
@@ -265,8 +287,13 @@ class FileIO:
                 elif (day == '4'):
                     col_num = 5
 
+<<<<<<< HEAD
                 #appends the appointment details in a dictionary to the data list 
                 data.append({column[0]:time,column[col_num]:", ".join([athlete,tutor,subject,classroom])})
+=======
+                #appends the appointment details in a dictionary to the data list
+                data.append({column[0]:time,column[col_num]:[athlete,tutor,subject,classroom]})
+>>>>>>> 0cefc49f06cab32d3c9d006633891932b6600ab9
 
 
             #write into a file csv file
@@ -283,10 +310,10 @@ class FileIO:
 
         #assigns sd to the csv sorted by the time and day
         sd = sort.sort_values(by=["Time","Monday","Tuesday","Wednesday","Thursday","Friday"],ascending =True)
-        
+
         #writes the sorted file back into mySchedule.csv
         sd.to_csv("schedule.csv",index=False)
-        
+
         #calls writeSave to create an appointment text file
         self.writeSave(appointments)
 
@@ -305,13 +332,13 @@ class FileIO:
 
             #reads each element of appointments list
             for i in range(0,len(appointments)):
-                
+
                 #splits the row in appointment to be different elements
                 app = str(appointments[i]).split(" ")
 
                 #assigns name_doc to the second element in the row and getting only the name
                 name_doc = str(app[2])[:-1][1:]
-                
+
                 #assigning the individual appointment details to a variable
                 time = str(app[0])
                 day = str(app[1])
@@ -349,12 +376,21 @@ class FileIO:
 
         #reads the csv file made
         sort = pd.read_csv("mySchedule.csv")
-        
-        #assigns sd to the csv sorted by the time and day  
+
+        #assigns sd to the csv sorted by the time and day
         sd = sort.sort_values(by=["Time","Monday","Tuesday","Wednesday","Thursday","Friday"],ascending =True)
-        
+
         #writes the sorted file back into mySchedule.csv
         sd.to_csv("mySchedule.csv",index=False)
 
         #closes the file that was opened
         mySchedule.close()
+
+    # Creates a txt file containing error lines
+    def createErrorReport(self,errorLog):
+        f = open("errorLog.txt", "w")
+
+        for line in errorLog:
+            f.write(line)
+
+        f.close()

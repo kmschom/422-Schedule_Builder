@@ -1,6 +1,6 @@
 """
 Name: builder.py
-Purpose: ???
+Purpose: ?
 
 Creation Date: Feb. 12, 2022
 Last Updated: Mar. 1, 2022
@@ -25,17 +25,19 @@ from athlete import Athlete
 import copy
 
 classrooms =[
-"100",
-"101",
-"102",
-"103",
-"104",
-"105",
+"201","202","203","204",
+"205","206","207","208",
+"209","210","211","212",
+"213","214","215","301",
+"302","303","304","305",
+"306","307","308","309",
+"310","311","312","313",
+"314","315","316","317",
 ]
 
 class Builder:
     def __init__(self):
-
+        self.fileIO = FileIO()
         self.tutorDataList = []
         self.athleteDataList = []
         self.schedules = []
@@ -63,21 +65,28 @@ class Builder:
 
     def signalSchedule(self, athletePath, tutorPath):
         #POSSIBLY CHECK FOR VALIDITY
-        self.fileIO = FileIO()
-        print(athletePath, tutorPath)
-        (self.tutorDataList, self.athleteDataList) = self.fileIO.readFiles(athletePath,tutorPath)
-        # print(self.fileIO.readFiles(athletePath,tutorPath))
+
+
+        (self.errorLog, self.tutorDataList, self.athleteDataList) = self.fileIO.readFiles(athletePath,tutorPath)
+        print(self.errorLog,self.tutorDataList, self.athleteDataList)
+
+        if len(self.errorLog) == 2:
+            return (False, self.errorLog[1])
+        if len(self.errorLog) > 2:
+            self.fileIO.createErrorReport(self.errorLog)
+            return (False, "ERROR! Please look into errorLog.txt for details")
+
         self._createSchedules()
         self.getBestSchedule()
         self.showAppointments(self.bestSchedule)
         self.fileIO.writeCSV(self.bestSchedule.appointments)
         #self.fileIO.individualSchedule(self.bestSchedule.appointments)
-        return True
+        return (True, None)
 
     def exportIndividual(self, name):
         #individualApptList = []
         #print(name)
-        # for appt in self.bestSchedule.appointments 
+        # for appt in self.bestSchedule.appointments
         self.fileIO.individualSchedule(self.bestSchedule.appointments,name)
 
 
