@@ -27,7 +27,7 @@ import csv
 import appointment
 import pandas as pd
 from datetime import date
-
+import os
 
 class FileIO:
     def readFiles(self, athFilePath, tutFilePath):
@@ -239,9 +239,11 @@ class FileIO:
     def writeSave(self,appointments):
         #assigns a variable to a text file
         appointment_f = "appointment.txt"
+        new_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),"Schedule")
+        new_dir = os.path.join(new_path,appointment_f)
 
         # opens and writes to the text file
-        with open(appointment_f,"w") as app_file:
+        with open(new_dir,"w") as app_file:
 
             #loops through appointments list
             for i in range(0,len(appointments)):
@@ -257,8 +259,11 @@ class FileIO:
     def writeCSV(self,appointments):
 
         #assigns filename to a csv file
+        full_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Schedule")
         filename = "schedule.csv"
-
+        new_path = os.path.join(full_path,filename)
+        if os.path.isdir(full_path)==False:
+            os.mkdir(full_path)
         # 3D Array to keep list of appointments by day and hour
         appts = []
         for i in range(5):
@@ -280,7 +285,7 @@ class FileIO:
         header = ['Time','Monday','Tuesday','Wednesday','Thursday','Friday']
 
         #opens and writes to the schedule.csv
-        with open(filename,"w",newline='') as finalSchedule:
+        with open(new_path,"w",newline='') as finalSchedule:
 
             #loops through a list of appointments
             for app in appointments:
@@ -348,7 +353,6 @@ class FileIO:
 
         #calls writeSave to create an appointment text file
         self.writeSave(appointments)
-
         #closes the file that was opened and written into
         finalSchedule.close()
 
@@ -358,6 +362,9 @@ class FileIO:
         column = ['Time','Monday','Tuesday','Wednesday','Thursday','Friday']
         mine = [] #initializes the list that goes into a row in the csv
         filename = f"{name}.csv" #names the csv file
+
+        new_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),"Schedule")
+        new_dir = os.path.join(new_path,filename)
 
         # 3D Array to keep list of appointments by day and hour
         appts = []
@@ -380,7 +387,7 @@ class FileIO:
         header = ['Time','Monday','Tuesday','Wednesday','Thursday','Friday']
 
         #opens and writes to the schedule.csv
-        with open(filename,"w",newline='') as individualSchedule:
+        with open(new_dir,"w",newline='') as individualSchedule:
 
             #loops through a list of appointments
             for app in appointments:
