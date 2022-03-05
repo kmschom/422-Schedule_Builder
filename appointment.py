@@ -18,14 +18,28 @@ Code documentation              ks 3/1/22
 """
 
 class Appointment:
-    def __init__(self, time, tutor, athlete, subject, classroom):
+    def __init__(self, time, tutor, athletes, subject, classroom):
         self.classroom = classroom
         self.time = time[0]
         self.day = time[1]
         self.tutor = tutor
-        self.athletes = [athlete]
+        self.athletes = athletes
         self.subject = subject
 
     def __repr__(self):
-        summary = str(self.time) + ' ' + str(self.day) + ' ' + str(self.athletes) + ' ' + self.subject + " " + str(self.tutor) + " " + str(self.classroom)
+        athletes = ""
+        for ath in self.athletes:
+            athletes += f"{str(ath)}"
+            athletes += "/"
+        athletes = athletes[:-1]
+        summary = athletes + ' ' + self.subject + " with:" + str(self.tutor) + " " + str(self.classroom)
+        return summary
+
+    def __str__(self):
+        athletes = ""
+        for ath in self.athletes:
+            athletes += f"{str(ath)}"
+            athletes += "/"
+        athletes = athletes[:-1]
+        summary = athletes + " " + str(self.time) + ' ' + str(self.day) + ' ' + self.subject + " " + str(self.tutor) + " " + str(self.classroom)
         return summary

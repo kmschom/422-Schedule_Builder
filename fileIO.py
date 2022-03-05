@@ -210,24 +210,27 @@ class FileIO:
         """This reads the appointment.txt file and writes the proper information for each appointment into
                 their own dictionary. It then returns a list of dictionaries."""
 
-        appt_dict = []  # holds the dictionary of appointments
-
+        appts = []  # holds the dictionary of appointments
         # This opens and reads the appointment file
-        with open("attempt.txt", "r") as file:
+        with open("appointment.txt", "r") as file:
             # This splits the appointment info from the .txt file
             for row in file:
-                temp = row.split(" ")                       # a list of information collected from file
-                day = int(temp[1])                          # Sets the day into an int value
-                time = int(temp[0])                         # Sets the time into an int value
-                athlete = temp[2].strip("[]").split(",")    # Makes the string list of athletes into a list
-                room = int(temp[5].strip())                 # Makes the room into an int
+                data = row.split(" ")
+                athletes = data[0].split("/")
+                athInfo = []
+                for ath in athletes:
+                    athInfo.append(ath.split(","))
+                time = data[1]
+                day = data[2]
+                subject = data[3]
+                tutor = data[4].split(",")
+                classroom = data[5]
 
-                # Makes a dictionary for each appointment and appends it into a list
-                DictApp = {"day": day, "time": time, "athlete": athlete, "subject": temp[3], "tutor": temp[4],
-                           "room": room}  # Makes the appointment dictionaries
-                appt_dict.append(DictApp)
+                appts.append([athInfo, time, day, subject, tutor, classroom])
 
-        return appt_dict
+
+
+        return (True,appts)
 
     #writes a text file with all of apppointments from a list
     def writeSave(self,appointments):
@@ -277,24 +280,13 @@ class FileIO:
         with open(filename,"w",newline='') as finalSchedule:
 
             #loops through a list of appointments
-            for i in range(0,len(appointments)):
-
-                #assign app to a row in a list of appointments that is split by a space
-                app = str(appointments[i]).split(" ")
-
-                #assigning the individual appointment details to a variable
-                time = app[0]
-                day = app[1]
-                athlete = str(app[2])[:-1][1:]
-                subject = app[3]
-                tutor = app[4]
-                classroom = app[5]
+            for app in appointments:
 
                 # Create the info statement of each appointment and add it to the 3D list
-                appts[int(day)][int(time)].append(f"{athlete},{tutor},{subject},{classroom}")
+                appts[int(app.day)][int(app.time)].append(repr(app))
 
                 # Increment the number of appointments for that hour/day index
-                lengthIndex[int(time)][int(day)] += 1
+                lengthIndex[int(app.time)][int(app.day)] += 1
 
 
             # The list that will contain the
@@ -362,65 +354,97 @@ class FileIO:
         #elements that are needed for the first row of the csv file
         column = ['Time','Monday','Tuesday','Wednesday','Thursday','Friday']
         mine = [] #initializes the list that goes into a row in the csv
-        filename = "mySchedule.csv" #names the csv file
-        #print(str(name))
-        #opens and writes into a csv file
-        with open(filename,"w") as mySchedule:
+        filename = f"{name}.csv" #names the csv file
 
-            #reads each element of appointments list
-            for i in range(0,len(appointments)):
+        # 3D Array to keep list of appointments by day and hour
+        appts = []
+        for i in range(5):
+            asd = []
+            for j in range(24):
+                asd.append([])
+            appts.append(asd)
 
-                #splits the row in appointment to be different elements
-                app = str(appointments[i]).split(" ")
+        # 2D Array to keep the number of appointments for each day/hour period
+        lengthIndex = []
+        for i in range(24):
+            asd = []
+            for j in range(5):
+                asd.append(0)
+            lengthIndex.append(asd)
 
-                #assigns name_doc to the second element in the row and getting only the name
-                name_doc = str(app[2])[:-1][1:]
 
-                #assigning the individual appointment details to a variable
-                time = str(app[0])
-                day = str(app[1])
-                athlete = name
-                subject = str(app[3])
-                tutor = str(app[4])
-                classroom = str(app[5])
+        #elements that are needed for the first row of the csv file
+        header = ['Time','Monday','Tuesday','Wednesday','Thursday','Friday']
 
-                #assign the appointment to a certain day
-                if (day == '0'):
-                    col_num = 1
-                elif (day == '1'):
-                    col_num = 2
-                elif (day == '2'):
-                    col_num = 3
-                elif (day == '3'):
-                    col_num = 4
-                elif (day == '4'):
-                    col_num = 5
+        #opens and writes to the schedule.csv
+        with open(filename,"w",newline='') as individualSchedule:
 
-                #if the name is the same as the second element in the ith row of appointment
-                if str(name_doc)==str(name):
-                    #appending a dictionary that consists of the time and appointment details
-                    mine.append({column[0]:time,column[col_num]:", ".join([tutor,subject,classroom])})
+            #loops through a list of appointments
+            for app in appointments:
 
-            #write into a file csv file
-            writer = csv.DictWriter(mySchedule, fieldnames = column)
+                # Create the info statement of each appointment and add it to the 3D list
+                appts[int(app.day)][int(app.time)].append(repr(app))
 
-            #writes the column names
-            writer.writeheader()
+                # Increment the number of appointments for that hour/day index
+                lengthIndex[int(app.time)][int(app.day)] += 1
 
-            #writes the mine list into the rows
-            writer.writerows(mine)
 
-        #reads the csv file made
-        sort = pd.read_csv("mySchedule.csv")
+            # The list that will contain the
+            timeColumn = []
 
-        #assigns sd to the csv sorted by the time and day
-        sd = sort.sort_values(by=["Time","Monday","Tuesday","Wednesday","Thursday","Friday"],ascending =True)
+            #Adds the times to the time column
+            for time in range(8,24):
+                maxlen = max(lengthIndex[time])
+                for i in range(maxlen):
+                    timeColumn.append(time)
+                timeColumn.append("") # an empty row at the end of a hour period
 
-        #writes the sorted file back into mySchedule.csv
-        sd.to_csv("mySchedule.csv",index=False)
+            # Getting rid of the empty row at the very end
+            timeColumn = timeColumn[:-1]
 
-        #closes the file that was opened
-        mySchedule.close()
+            # 2D list to keep day/hour list of appointments
+            dayColumns = [[], [], [], [], []]
+
+            # Goes through each day and hour
+            for day in range(0,5):
+                for time in range(8,24):
+                    for a in appts[day][time]:
+                        if a=="":
+                            appts[day][time].remove(a)
+
+                    # Gets the appointment list length of the hour with the highest amount of appointments
+                    # for that hour period
+                    maxLen = max(lengthIndex[time])
+                    length = len(appts[day][time])
+
+                    # Adds empty rows to the hourly appointment list it until it reaches the longest columnn
+                    for i in range(length, maxLen):
+                        appts[day][time].append("")
+
+                # Adds all the hourly appointment lists together to get a daily appointment list
+                for timeAppts in appts[day][8:]:
+                    dayColumns[day].extend(timeAppts)
+                    dayColumns[day].append("")
+
+            #Create writer
+            writer = csv.writer(individualSchedule)
+
+            # Write the columns headers
+            writer.writerow(header)
+
+            # Rows to add each row to write
+            rows = []
+
+            # Go through indexes of the day with the most amount of appointments
+            for i in range(len(timeColumn)):
+                # Add the appointment lists for that hour of all days to the row
+                rows.append([timeColumn[i],dayColumns[0][i],dayColumns[1][i],dayColumns[2][i],dayColumns[3][i],dayColumns[4][i]])
+
+            #write to file
+            writer.writerows(rows)
+
+        #closes the file that was opened and written into
+        individualSchedule.close()
 
     # Creates a txt file containing error lines
     def createErrorReport(self,errorLog):

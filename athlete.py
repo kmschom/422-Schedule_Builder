@@ -32,10 +32,10 @@ class Athlete:
         self.hoursLeft = self.createHours()
 
     def __str__(self):
-        return self.name
+        return f"{self.name},{self.lastname}"
 
     def __repr__(self):
-        return self.name
+        return f"{self.name},{self.lastname}"
 
     def shuffleTimes(self, availability):
         for day in availability:

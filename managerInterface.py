@@ -153,7 +153,7 @@ class ManagerInterface:
 
     def generateIndividual(self):
         requestedName = self.nameInputBox.get()
-        self.exportIndividual(requestedName)
+        self.statusMessage = self.exportIndividual(requestedName)
 
 
     def frameDestroy(self):

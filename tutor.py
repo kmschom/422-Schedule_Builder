@@ -30,7 +30,7 @@ class Tutor:
         self.hours = data["hours"]
 
     def __str__(self):
-        return self.name
+        return f"{self.name},{self.lastname}"
 
     def shuffleTimes(self, availability):
         for day in availability:

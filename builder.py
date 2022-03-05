@@ -22,6 +22,7 @@ from fileIO import FileIO
 from schedule import Schedule
 from tutor import Tutor
 from athlete import Athlete
+from appointment import Appointment
 import copy
 
 classrooms =[
@@ -41,8 +42,11 @@ class Builder:
         self.tutorDataList = []
         self.athleteDataList = []
         self.schedules = []
-        self.bestSchedule = None
-        self.scheduleExists = False #Replace with file check function once done
+        (self.scheduleExists, self.loadData) = self.fileIO.readSave()
+        if self.scheduleExists:
+            self.readLoad()
+        for app in self.bestSchedule:
+            print(app)
         self.UI = ManagerInterface(self.scheduleExists, self.signalSchedule, None, self.exportIndividual)
 
     def _createSchedules(self):
@@ -55,7 +59,7 @@ class Builder:
         bestScore = 0
         for sch in self.schedules:
             if sch.score > bestScore:
-                self.bestSchedule = sch
+                self.bestSchedule = sch.appointments
                 bestScore = sch.score
 
     def showAppointments(self, schedule):
@@ -76,15 +80,39 @@ class Builder:
         self._createSchedules()
         self.getBestSchedule()
         # self.showAppointments(self.bestSchedule)
-        self.fileIO.writeCSV(self.bestSchedule.appointments)
+        self.fileIO.writeCSV(self.bestSchedule)
         return (True, None)
 
     def exportIndividual(self, name):
-        #individualApptList = []
-        #print(name)
-        # for appt in self.bestSchedule.appointments
-        self.fileIO.individualSchedule(self.bestSchedule.appointments,name)
+        individualApptList = []
+        print(name)
+        first,last = name.split(" ")
+        for appt in self.bestSchedule:
+            for ath in appt.athletes:
+                if ath.name == first and ath.lastname == last:
+                    individualApptList.append(appt)
+        for appt in individualApptList:
+            print(appt)
 
+        result = self.fileIO.individualSchedule(individualApptList, f"{first}_{last}")
+
+        if result:
+            return "Individual Schedule Created"
+        else:
+            return "Name not found"
+
+    def readLoad(self):
+        self.bestSchedule = []
+        for appt in self.loadData:
+            athList = []
+            for ath in appt[0]:
+                athList.append(Athlete({"id": None, "name":ath[0], "lastname":ath[1],
+                "availability":[], "subjects": [], "hours":0,"required":False}))
+
+            tut = Tutor({"id": None, "name":appt[4][0], "lastname":appt[4][1],
+            "availability":[], "subjects": [], "hours":0})
+
+            self.bestSchedule.append(Appointment([appt[1],appt[2]],tut,athList,appt[3],appt[5][:-1]))
 
 def main():
     builder = Builder()
