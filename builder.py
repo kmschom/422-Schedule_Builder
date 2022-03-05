@@ -46,7 +46,7 @@ class Builder:
         if self.scheduleExists:
             self.readLoad()
 
-        self.UI = ManagerInterface(self.scheduleExists, self.signalSchedule, None, self.exportIndividual)
+        self.UI = ManagerInterface(self.scheduleExists, self.signalSchedule, self.exportIndividual)
 
     def _createSchedules(self):
         for i in range(1):
@@ -96,9 +96,11 @@ class Builder:
         result = self.fileIO.individualSchedule(individualApptList, f"{first}_{last}")
 
         if result:
+            print("made")
             return "Individual Schedule Created"
         else:
-            return "Name not found"
+            print("fail")
+            return "Name not found"                         # currently returning name not found regardless if name exists or not (as of 1:08am 3/5)
 
     def readLoad(self):
         self.bestSchedule = []
