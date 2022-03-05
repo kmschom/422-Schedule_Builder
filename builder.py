@@ -45,8 +45,7 @@ class Builder:
         (self.scheduleExists, self.loadData) = self.fileIO.readSave()
         if self.scheduleExists:
             self.readLoad()
-        for app in self.bestSchedule:
-            print(app)
+
         self.UI = ManagerInterface(self.scheduleExists, self.signalSchedule, None, self.exportIndividual)
 
     def _createSchedules(self):

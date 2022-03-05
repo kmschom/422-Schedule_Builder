@@ -212,21 +212,24 @@ class FileIO:
 
         appts = []  # holds the dictionary of appointments
         # This opens and reads the appointment file
-        with open("appointment.txt", "r") as file:
-            # This splits the appointment info from the .txt file
-            for row in file:
-                data = row.split(" ")
-                athletes = data[0].split("/")
-                athInfo = []
-                for ath in athletes:
-                    athInfo.append(ath.split(","))
-                time = data[1]
-                day = data[2]
-                subject = data[3]
-                tutor = data[4].split(",")
-                classroom = data[5]
+        try:
+            with open("appointment.txt", "r") as file:
+                # This splits the appointment info from the .txt file
+                for row in file:
+                    data = row.split(" ")
+                    athletes = data[0].split("/")
+                    athInfo = []
+                    for ath in athletes:
+                        athInfo.append(ath.split(","))
+                    time = data[1]
+                    day = data[2]
+                    subject = data[3]
+                    tutor = data[4].split(",")
+                    classroom = data[5]
 
-                appts.append([athInfo, time, day, subject, tutor, classroom])
+                    appts.append([athInfo, time, day, subject, tutor, classroom])
+        except:
+            return(False, None)
 
 
 
