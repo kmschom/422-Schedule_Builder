@@ -30,7 +30,7 @@ from queue import PriorityQueue  # calls PriorityQueue class to build required a
 
 
 # Schedule class; holds functions to create tutor and athlete lists, makes priority queues, and runs both scheduling algorithms
-class Schedule:
+class Scheduler:
     # initializes Schedule attributes passed to class from builder._createSchedules
     def __init__(self, athleteDataList, tutorDataList, classrooms):
         self.athleteList = []  # list of athlete objects; initialized as empty

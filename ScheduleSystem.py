@@ -19,7 +19,7 @@ Code documentation              ks 3/1/22
 
 from managerInterface import ManagerInterface
 from fileIO import FileIO
-from schedule import Schedule
+from scheduler import Scheduler
 from tutor import Tutor
 from athlete import Athlete
 from appointment import Appointment
@@ -36,7 +36,7 @@ classrooms =[
 "314","315","316","317",
 ]
 
-class Builder:
+class ScheduleSystem:
     def __init__(self):
         self.fileIO = FileIO()
         self.tutorDataList = []
@@ -53,7 +53,7 @@ class Builder:
 
     def _createSchedules(self):
         for i in range(1):
-            sch = Schedule( copy.deepcopy(self.athleteDataList), copy.deepcopy(self.tutorDataList), classrooms)
+            sch = Scheduler( copy.deepcopy(self.athleteDataList), copy.deepcopy(self.tutorDataList), classrooms)
             sch.makeSchedule()
             self.schedules.append(sch)
 
@@ -82,7 +82,7 @@ class Builder:
         self._createSchedules()
         self.getBestSchedule()
         # self.showAppointments(self.bestSchedule)
-        self.fileIO.writeCSV(self.bestSchedule)
+        self.fileIO.writeFiles(self.bestSchedule)
         return (True, "Format: Name Lastname")
 
     def exportIndividual(self, name):
@@ -120,7 +120,7 @@ class Builder:
             self.bestSchedule.append(Appointment([appt[1],appt[2]],tut,athList,appt[3],appt[5][:-1]))
 
 def main():
-    builder = Builder()
+    system = ScheduleSystem()
     # builder.run()
 
 main()
