@@ -9,7 +9,7 @@ Authors: David Han (dh), Mert Yapucuoğlu (my)
 managerInterface.py is part of the All In a Week's Work (AWW) Schedule Building software which takes input on athlete and tutor
 availability and builds a schedule of tutoring appointments for the entire group.
 Called by:
-    builder.oy - 
+    builder.oy -
 
 Modifications:
 Created file                    my 2/12/22
@@ -35,7 +35,11 @@ class ManagerInterface:
         self.signalSchedule = signalSchedule
         self.mainFrame = None
         self.exportIndividual = exportIndividual
-        self.statusMessage = "Awaiting Action"
+
+        if self.scheduleExists:
+            self.statusMessage = "Awaiting Action"
+        else:
+            self.statusMessage =self.statusMessage = "No schedule found: To create a schedule,\n please begin by importing the required files"
         self._createDisplay()
 
     def _createDisplay(self):
@@ -103,7 +107,7 @@ class ManagerInterface:
             imageFrame.create_image(100, 75, image=img)
 
             #Label
-            yesLabel = Label(self.mainFrame, text = "Schedule Found: Please Enter a Name Below", bg="green", fg="white", font=("Helvetica 30 bold"))
+            yesLabel = Label(self.mainFrame, text = "Schedule Found/Made: Please Enter a Name Below", bg="green", fg="white", font=("Helvetica 30 bold"))
             yesLabel["highlightbackground"] = "yellow"
             yesLabel["highlightthickness"] = 1
             yesLabel["relief"] = "groove"
@@ -128,9 +132,7 @@ class ManagerInterface:
 
         else:
             """No Schedule Found"""                                                                     #Possibly instead of everything contained in 1 big frame, could instead have a unique frame for each widget
-            
-            self.statusMessage = "No schedule found: To create a schedule,\n please begin by importing the required files"
-            
+
             #Frame
             self.mainFrame = Frame(self.root, width=1260, height=640, bg="green")                       #or just replace noFrame call w self.root
             self.mainFrame.grid(row=0, column=0)
@@ -163,7 +165,8 @@ class ManagerInterface:
 
     def _startScheduling(self, filePath1, filePath2):
         #Will be called when the file input is done
-        (self.scheduleExists, self.statusMessage) = self.signalSchedule(filePath1, filePath2)               # ???
+        (self.scheduleExists, self.statusMessage) = self.signalSchedule(filePath1, filePath2)
+        print(self.statusMessage)               # ???
         self.frameDestroy()
         self._updateDisplay()
         #Success Message box

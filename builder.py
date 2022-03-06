@@ -80,7 +80,7 @@ class Builder:
         self.getBestSchedule()
         # self.showAppointments(self.bestSchedule)
         self.fileIO.writeCSV(self.bestSchedule)
-        return (True, None)
+        return (True, "Format: Name Lastname")
 
     def exportIndividual(self, name):
         individualApptList = []
@@ -88,7 +88,7 @@ class Builder:
         try:
             last,first = name.split(" ")
         except:
-            return "Format: Name Lastname"
+            return "Invalid Format! Correct Format: Name Lastname"
         for appt in self.bestSchedule:
             for ath in appt.athletes:
                 if ath.name == first and ath.lastname == last:
