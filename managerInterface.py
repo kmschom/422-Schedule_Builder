@@ -51,7 +51,7 @@ class ManagerInterface:
 
         """Window Setup"""
         self.root = Tk()                                # create tkinter window
-        self.root.title("AWW Schedule Builder")         # set the window title
+        self.root.title("JTAS")         # set the window title
         self.root.geometry("1260x640")                  # set the size of the window
         self.root.minsize(1260,640)                     # set the fixed minimum adjustable size of the window
         self.root.maxsize(1260,640)                     # set the fixed maximum adjustable size of the window
