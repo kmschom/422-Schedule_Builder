@@ -58,7 +58,7 @@ class ScheduleSystem:
         self.UI = ManagerInterface(self.scheduleExists, self.signalSchedule, self.exportIndividual)
 
     def _createSchedules(self):
-        for i in range(100):
+        for i in range(1):
             sch = Scheduler(copy.deepcopy(self.athleteDataList), copy.deepcopy(self.tutorDataList), classrooms)  # makes new schedule object to fill in as another schedule iteration
             sch.makeSchedule()
             self.schedules.append(sch)
@@ -132,4 +132,3 @@ def main():
     system = ScheduleSystem() # Schedule System object
 
 main()
-
