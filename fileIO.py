@@ -25,7 +25,6 @@ Code documentation                km,bv
 
 import csv
 import appointment
-import pandas as pd
 from datetime import date
 import os
 
