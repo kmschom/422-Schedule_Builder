@@ -4,12 +4,12 @@ Purpose: ?
 
 Creation Date: Feb. 12, 2022
 Last Updated: Mar. 1, 2022
-Authors: ???
+Authors: Mert Yapucuoğlu (my)
 
 builder.py is part of the All In a Week's Work (AWW) Schedule Building software which takes input on athlete and tutor
 availability and builds a schedule of tutoring appointments for the entire group.
 Called by:
-    ???
+    None
 
 Modifications:
 Created file                    my 2/12/22
@@ -42,10 +42,13 @@ class Builder:
         self.tutorDataList = []
         self.athleteDataList = []
         self.schedules = []
+        # if appointment.txt file exists, self.scheduleExists = True and self.loadData will hold list of appointments
         (self.scheduleExists, self.loadData) = self.fileIO.readSave()
+        # check if a schedule has been created
         if self.scheduleExists:
+            # writes appointments to self.bestSchedule
             self.readLoad()
-
+        # update manager interface with new prompts now that a schedule has been created
         self.UI = ManagerInterface(self.scheduleExists, self.signalSchedule, self.exportIndividual)
 
     def _createSchedules(self):
