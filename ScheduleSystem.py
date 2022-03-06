@@ -60,7 +60,7 @@ class ScheduleSystem:
 
     # make numerous schedule objects to test many potential schedules
     def _createSchedules(self):
-        for i in range(100):
+        for i in range(500):
             sch = Scheduler(copy.deepcopy(self.athleteDataList), copy.deepcopy(self.tutorDataList), classrooms)  # makes new schedule object to fill in as another schedule iteration
             sch.makeSchedule()
             self.schedules.append(sch)
