@@ -1,6 +1,3 @@
-# 422-Schedule_Builder
-CIS 422 Project 2: "JAQUA Tutor Appointment Scheduler" Schedule Builder
-
 This system is called JTAS(JAQUA Tutoring Appointment Scheduler) and it is used for the John E. Jaqua Academic Center for Student Athletes (JAQUA) to schedule tutoring appointments for the University of Oregon’s student athletes. This system takes in two files, an athlete file and a tutor file. Both files contain the student’s first and last name, the id, hours wanted, and subjects. Based on the input files, our system will make a big csv file with all of the athletes’ appointments for the week including the time, day, subject, tutor name, and classroom. In addition, the user can get an individual student’s schedule.
 
 Authors: David Han, Kassandra Morando, Kelly Schombert, Brianna Vago, Mert Yapucuoğlu
