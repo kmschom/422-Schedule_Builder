@@ -6,8 +6,8 @@ Creation Date: Feb. 12, 2022
 Last Updated: Mar. 1, 2022
 Authors: Mert Yapucuoğlu (my)
 
-ScheduleSystem.py is part of the All In a Week's Work (AWW) Schedule Building software which takes input on athlete and tutor
-availability and builds a schedule of tutoring appointments for the entire group.
+ScheduleSystem.py is part of the JTAS system which takes input on athlete and tutor availability and builds a schedule of
+tutoring appointments for the entire group.
 Called by:
     None
 
