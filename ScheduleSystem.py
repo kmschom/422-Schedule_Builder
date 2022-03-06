@@ -58,7 +58,7 @@ class ScheduleSystem:
         self.UI = ManagerInterface(self.scheduleExists, self.signalSchedule, self.exportIndividual)
 
     def _createSchedules(self):
-        for i in range(1):
+        for i in range(100):
             sch = Scheduler(copy.deepcopy(self.athleteDataList), copy.deepcopy(self.tutorDataList), classrooms)  # makes new schedule object to fill in as another schedule iteration
             sch.makeSchedule()
             self.schedules.append(sch)
@@ -98,13 +98,17 @@ class ScheduleSystem:
         individualApptList = [] # list of appointments assigned to an individual; initialized as empty
         print(name)
         try:
-            last,first = name.split(" ")
+            first,last = name.split(" ")
         except:
-            return "Invalid Format! Correct Format: Name Lastname"
+            return "Invalid Format! Correct Format: First_name Last_name"
         for appt in self.bestSchedule:
             for ath in appt.athletes:
                 if ath.name == first and ath.lastname == last:
                     individualApptList.append(appt)
+
+            if appt.tutor.name == first and appt.tutor.lastname == last:
+                individualApptList.append(appt)
+
         if len(individualApptList) > 0:
             self.fileIO.individualSchedule(individualApptList, f"{first}_{last}")
             return "Individual Schedule Created"
