@@ -259,7 +259,7 @@ class FileIO:
                 app_file.write('\n')
 
     #write a csv of all the appointments for the week using a list of appointments
-    def writeCSV(self,appointments):
+    def writeFiles(self,appointments):
 
         #assigns filename to a csv file
         full_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Schedule")
