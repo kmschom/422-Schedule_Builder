@@ -36,7 +36,7 @@ classrooms =[
 "314","315","316","317",
 ]
 
-class ScheduleBuilder:
+class ScheduleSystem:
     def __init__(self):
         self.fileIO = FileIO()
         self.tutorDataList = []
@@ -120,7 +120,7 @@ class ScheduleBuilder:
             self.bestSchedule.append(Appointment([appt[1],appt[2]],tut,athList,appt[3],appt[5][:-1]))
 
 def main():
-    builder = Builder()
+    system = ScheduleSystem()
     # builder.run()
 
 main()
