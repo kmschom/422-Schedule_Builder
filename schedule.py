@@ -13,11 +13,13 @@ Called by:
     builder.py - calls Schedule class 100 times within _createSchedules to make and score multiple schedule iterations
 
 Modifications:
-Created file                    my 2/12/22
-Implemented required queue      ks, my 2/19/22
-Implemented optional queue      ks 2/23/22
-Implemented scoring system      my 2/24/22
-Code documentation              ks 3/1/22
+Created file                                        my 2/12/22
+Implemented required queue                          ks, my 2/19/22
+Implemented optional queue                          ks 2/23/22
+Implemented scoring system                          my 2/24/22
+Code documentation                                  ks 3/1/22
+Added classroom assignments and
+    dictionaries to track individual schedules      my 3/4/22
 """
 
 from tutor import Tutor  # calls Tutor class to build tutor objects and add to tutorList
@@ -39,16 +41,15 @@ class Schedule:
         self.required = self._createRequired()  # queue of required hours; initialized with createRequired function
         self.optional = self._createOptional()  # queue of optional hours; initialized with createOptional function
         self.appointments = []  # list of appointment objects made; initialized as empty
-        self.athIndividualAppointments = {} # a dictionary to keep track of each athlete's appointments
-        self.tutIndividualAppointments = {} # a dictionary to keep track of each tutor's appointments
-        self.classroomDailyIndex = []
+        self.athIndividualAppointments = {} # dictionary to keep track of each athlete's appointments; initialized as empty
+        self.tutIndividualAppointments = {} # dictionary to keep track of each tutor's appointments; initialized as empty
+        self.classroomDailyIndex = []   # list of ints used to track classroom assignments for a given day and time
+        # uses placeholder list and appends 24 ints to stand for hours in a day and appends each "day" to classroomDailyIndex list
         for i in range(5):
-            asd = []
+            asd = []    # placeholder list; initialized as empty
             for j in range(24):
                 asd.append(0)
             self.classroomDailyIndex.append(asd)
-
-        # print(self.classroomDailyIndex)
 
     # takes list of athlete and tutor data, processes data into Athlete and Tutor objects and appends to athleteList and tutorList
     def _createLists(self, athleteDataList, tutorDataList):
@@ -85,46 +86,48 @@ class Schedule:
                                 # if subject in tutor's list of offered subjects
                                 if sub in tut.subjects:
                                     # if tutor is available at time in question
-                                    # create Appointment object, update availability hours and schedule score
                                     if time in tut.availability[currentDay]:
+                                        # create Appointment object, update availability hours, assign classroom and schedule score
 
-                                        location = "zoom"
+                                        location = "zoom"   # holds location of appointment; either a classroom or "zoom"; initialized as "zoom"
 
+                                        # check if all classrooms have been assigned for that day and hour
                                         if self.classroomDailyIndex[currentDay][time]+1 == len(self.classrooms):
-                                            # print(self.classroomDailyIndex[currentDay][time])
+                                            # if so, keep location as "zoom"
                                             location = "zoom"
                                         else:
+                                            # else assign next available classroom to appointment and increment index
                                             location = self.classrooms[self.classroomDailyIndex[currentDay][time]]
                                             self.classroomDailyIndex[currentDay][time]+= 1
 
                                         appointment = Appointment((time, currentDay), tut, [ath], sub, location)
-
-                                        self.appointments.append(
-                                            appointment)
-
-
+                                        self.appointments.append(appointment)
 
                                         ath.hours -= 1
                                         # if athlete has remaining hour(s) to schedule, reinsert to priority queue
                                         if ath.hours > 1:
                                             self.required.put((1 / ath.hours, ath, ath.hours))
+                                        # remove current time from athlete and tutor's available hours
                                         ath.availability[currentDay].remove(time)
                                         tut.availability[currentDay].remove(time)
 
                                         # check if the athlete already exists in the dictionary
                                         if ath.id in self.athIndividualAppointments:
-                                            # if so, add it to their appointment list
+                                            # if so, add appointment to their appointment list
                                             self.athIndividualAppointments[ath.id].append(appointment)
                                         else:
-                                            # if not, create it and add the appointment
+                                            # if not, create their key and add the appointment
                                             self.athIndividualAppointments[ath.id] = [appointment]
 
                                         # check if the tutor already exists in the dictionary
                                         if tut.id in self.tutIndividualAppointments:
+                                            # if so, add appointment to their appointment list
                                             self.tutIndividualAppointments[tut.id].append(appointment)
                                         else:
+                                            # if not, create their key and add the appointment
                                             self.tutIndividualAppointments[tut.id] = [appointment]
 
+                                        # update hours needed for the subject
                                         ath.hoursLeft.remove((sub, hours))
                                         self.score += 1000
                                         # if subject has remaining hour(s) to schedule, reinsert to list
@@ -161,23 +164,26 @@ class Schedule:
                                             if hours > 0:
                                                 # if subject matches the appointment's subject
                                                 if sub == appt.subject:
-                                                    # if there are less than 3 athletes already in the appointment
-                                                    # add athlete to appointment, update athlete availability and schedule score
+                                                    # check if there are less than 3 athletes already in the appointment
                                                     if len(appt.athletes) < 3:
+                                                        # if so, add athlete to appointment, update athlete availability and schedule score
                                                         appt.athletes.append(ath)
                                                         ath.hours -= 1
+
                                                         # if athlete has remaining hour(s) to schedule, reinsert to priority queue
                                                         if ath.hours > 1:
                                                             self.required.put((1 / ath.hours, ath, ath.hours))
                                                         ath.availability[currentDay].remove(time)
 
+                                                        # check if the athlete already exists in the dictionary
                                                         if ath.id in self.athIndividualAppointments:
-                                                            # if so, add it to their appointment list
+                                                            # if so, add appointment to their appointment list
                                                             self.athIndividualAppointments[ath.id].append(appt)
                                                         else:
-                                                            # if not, create it and add the appointment
+                                                            # if not, create their key and add the appointment
                                                             self.athIndividualAppointments[ath.id] = [appt]
 
+                                                        # update hours needed for the subject
                                                         ath.hoursLeft.remove((sub, hours))
                                                         # if subject has remaining hour(s) to schedule, reinsert to list
                                                         if (hours - 1 > 0):
@@ -220,39 +226,47 @@ class Schedule:
                                 # if subject in tutor's list of offered subjects
                                 if sub in tut.subjects:
                                     # if tutor is available at time in question
-                                    # create Appointment object, update availability hours and schedule score
                                     if time in tut.availability[currentDay]:
+                                        # create Appointment object, assign location, update availability hours and schedule score
 
+                                        # check if all classrooms have been assigned for that day and hour
                                         location = "zoom"
                                         if self.classroomDailyIndex[currentDay][time]+1 == len(self.classrooms):
+                                            # if so, keep location as "zoom"
                                             location = "zoom"
                                         else:
+                                            # else assign next available classroom to appointment and increment index
                                             location = self.classrooms[self.classroomDailyIndex[currentDay][time]]
                                             self.classroomDailyIndex[currentDay][time]+= 1
 
                                         appointment = Appointment((time, currentDay), tut, [ath], sub, location)
                                         self.appointments.append(appointment)
+
                                         ath.hours -= 1
                                         # if athlete has remaining hour(s) to schedule, reinsert to priority queue
                                         if ath.hours > 1:
                                             self.optional.put((1 / ath.hours, ath, ath.hours))
+                                        # remove current time from athlete and tutor's available hours
                                         ath.availability[currentDay].remove(time)
                                         tut.availability[currentDay].remove(time)
 
                                         # check if the athlete already exists in the dictionary
                                         if ath.id in self.athIndividualAppointments:
-                                            # if so, add it to their appointment list
+                                            # if so, add appointment to their appointment list
                                             self.athIndividualAppointments[ath.id].append(appointment)
                                         else:
-                                            # if not, create it and add the appointment
+                                            # if not, create their key and add the appointment
                                             self.athIndividualAppointments[ath.id] = [appointment]
 
                                         # check if the tutor already exists in the dictionary
                                         if tut.id in self.tutIndividualAppointments:
+                                            # if so, add appointment to their appointment list
                                             self.tutIndividualAppointments[tut.id].append(appointment)
                                         else:
+                                            # if not, create their key and add the appointment
                                             self.tutIndividualAppointments[tut.id] = [appointment]
 
+                                        # update hours needed for the subject
                                         ath.hoursLeft.remove((sub, hours))
                                         # if subject has remaining hour(s) to schedule, reinsert to list
                                         if (hours - 1 > 0):
@@ -289,11 +303,11 @@ class Schedule:
                                             if hours > 0:
                                                 # if subject matches the appointment's subject
                                                 if sub == appt.subject:
-                                                    # if there are less than 3 athletes already in the appointment
-                                                    # add athlete to appointment, update athlete availability and schedule score
+                                                    # check if there are less than 3 athletes already in the appointment
                                                     if len(appt.athletes) < 3:
+                                                        # if so, add athlete to appointment, update athlete availability and schedule score
                                                         appt.athletes.append(ath)
-                                                        # print("Added athlete to an appointment\n")
+
                                                         ath.hours -= 1
                                                         # if athlete has remaining hour(s) to schedule, reinsert to priority queue
                                                         if ath.hours > 1:
@@ -303,13 +317,14 @@ class Schedule:
 
                                                         # check if the athlete already exists in the dictionary
                                                         if ath.id in self.athIndividualAppointments:
-                                                            # if so, add it to their appointment list
+                                                            # if so, add appointment to their appointment list
                                                             self.athIndividualAppointments[ath.id].append(appt)
                                                         else:
-                                                            # if not, create it and add the appointment
+                                                            # if not, create their key and add the appointment
                                                             self.athIndividualAppointments[ath.id] = [appt]
 
                                                         self.score += 1
+                                                        # update hours needed for the subject
                                                         ath.hoursLeft.remove((sub, hours))
                                                         # if subject has remaining hour(s) to schedule, reinsert to list
                                                         if (hours - 1 > 0):
