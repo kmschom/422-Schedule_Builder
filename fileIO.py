@@ -410,7 +410,7 @@ class FileIO:
                 maxlen = max(lengthIndex[time])
                 for i in range(maxlen):
                     timeColumn.append(time)
-                timeColumn.append("") # an empty row at the end of a hour period
+                # timeColumn.append("") # an empty row at the end of a hour period
 
             # Getting rid of the empty row at the very end
             timeColumn = timeColumn[:-1]
@@ -437,7 +437,7 @@ class FileIO:
                 # Adds all the hourly appointment lists together to get a daily appointment list
                 for timeAppts in appts[day][8:]:
                     dayColumns[day].extend(timeAppts)
-                    
+
 
             #Create writer
             writer = csv.writer(individualSchedule)
