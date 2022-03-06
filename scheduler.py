@@ -7,8 +7,8 @@ Creation Date: Feb. 12, 2022
 Last Updated: Mar. 1, 2022
 Authors: Mert Yapucuoğlu (my), Kelly Schombert (ks)
 
-schedule.py is part of the JTAS system which takes input on athlete and tutor availability and builds a schedule of
-tutoring appointments for the entire group.
+schedule.py is part of the JTAS(JAQUA Tutor Appointment Scheduler) Schedule Building software which takes input on athlete \
+and tutor availability and builds a schedule of tutoring appointments for the entire group.
 Called by:
     ScheduleSystem.py - calls Schedule class numerous times within _createSchedules to make and score multiple schedule iterations
 
