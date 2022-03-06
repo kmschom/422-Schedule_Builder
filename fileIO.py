@@ -437,7 +437,7 @@ class FileIO:
                 # Adds all the hourly appointment lists together to get a daily appointment list
                 for timeAppts in appts[day][8:]:
                     dayColumns[day].extend(timeAppts)
-                    dayColumns[day].append("")
+                    
 
             #Create writer
             writer = csv.writer(individualSchedule)
