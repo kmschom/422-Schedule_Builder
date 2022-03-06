@@ -213,7 +213,10 @@ class FileIO:
         appts = []  # holds the dictionary of appointments
         # This opens and reads the appointment file
         try:
-            with open("appointment.txt", "r") as file:
+            full_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Schedule")
+            filename = "appointment.txt"
+            new_path = os.path.join(full_path,filename)
+            with open(new_path, "r") as file:
                 # This splits the appointment info from the .txt file
                 for row in file:
                     data = row.split(" ")

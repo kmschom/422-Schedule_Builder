@@ -88,21 +88,22 @@ class Builder:
     def exportIndividual(self, name):
         individualApptList = []
         print(name)
-        first,last = name.split(" ")
+        try:
+            last,first = name.split(" ")
+        except:
+            return "Format: Name Lastname"
         for appt in self.bestSchedule:
             for ath in appt.athletes:
                 if ath.name == first and ath.lastname == last:
                     individualApptList.append(appt)
-        for appt in individualApptList:
-            print(appt)
 
-        result = self.fileIO.individualSchedule(individualApptList, f"{first}_{last}")
 
-        if result:
-            print("made")
+
+
+        if len(individualApptList) > 0:
+            self.fileIO.individualSchedule(individualApptList, f"{first}_{last}")
             return "Individual Schedule Created"
         else:
-            print("fail")
             return "Name not found"                         # currently returning name not found regardless if name exists or not (as of 1:08am 3/5)
 
     def readLoad(self):
