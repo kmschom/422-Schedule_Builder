@@ -102,7 +102,7 @@ class ScheduleSystem:
     # read through all appointments, store the appointments that include the input "name" and write an individual schedule using fileIO
     def exportIndividual(self, name):
         individualApptList = [] # list of appointments assigned to an individual; initialized as empty
-        print(name)
+        # print(name)
         # check and store format of inputted name
         try:
             first,last = name.split(" ")    # first and last name of inputted athlete name
@@ -120,7 +120,7 @@ class ScheduleSystem:
             # if input name matches appointment name, append to list of individual appointments
             if appt.tutor.name == first and appt.tutor.lastname == last:
                 individualApptList.append(appt)
-
+        # print(individualApptList)
         # if inputted individual has any appointments, write appointments to a file using fileIO
         if len(individualApptList) > 0:
             self.fileIO.individualSchedule(individualApptList, f"{first}_{last}")
