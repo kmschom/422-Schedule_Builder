@@ -1,6 +1,6 @@
 """
 Name: managerInterface.py
-Purpose: Create a user-friendly graphic user interface
+Purpose: Create a user-friendly graphic user interface blah blah
 
 Creation Date: Feb. 12, 2022
 Last Updated: Mar. 4, 2022
@@ -9,7 +9,7 @@ Authors: David Han (dh), Mert Yapucuoğlu (my)
 managerInterface.py is part of the All In a Week's Work (AWW) Schedule Building software which takes input on athlete and tutor
 availability and builds a schedule of tutoring appointments for the entire group.
 Called by:
-    builder.oy -
+    builder.py -
 
 Modifications:
 Created file                    my 2/12/22
@@ -30,7 +30,7 @@ from xml.dom.minidom import ReadOnlySequentialNamedNodeMap
 
 class ManagerInterface:
     def __init__(self, scheduleExists, signalSchedule, exportIndividual):
-        """Init type shit idk"""
+        """Initialize managerInferface attributes"""
         self.scheduleExists = scheduleExists
         self.signalSchedule = signalSchedule
         self.mainFrame = None
