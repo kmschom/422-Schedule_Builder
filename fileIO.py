@@ -88,7 +88,7 @@ class FileIO:
                 testerFirst = temp[0].isalpha()
                 testerLast = temp[1].isalpha()
                 if testerLast is False or testerFirst is False:
-                    errorLog.append(f"Invalid name format at line {index+1} of athlete file")
+                    errorLog.append(f"Invalid name format at line {index+2} of athlete file")
                 """------------TESTING NAME END------------"""
 
                 """------------TESTING GPA, YEAR, ID, HOURS START------------"""
@@ -98,15 +98,15 @@ class FileIO:
                     float(temp[2])  # ID
                     float(temp[5])  # Hours
                 except ValueError:
-                    errorLog.append(f"Invalid GPA/YEAR/ID/HOUR format at line {index+1} of athlete file")
+                    errorLog.append(f"Invalid GPA/YEAR/ID/HOUR format at line {index+2} of athlete file")
 
                 if 0 >= float(temp[3]) or float(temp[3]) > 4:
                     # Check GPA input
-                    errorLog.append(f"GPA can't below 0 ar above 4. {index+1} of athlete file")
+                    errorLog.append(f"GPA can't below 0 or above 4. At line {index+2} of athlete file")
 
                 if 0 >= float(temp[4]) or float(temp[4]) > 4:
                     # Check Year input
-                    errorLog.append(f"Year can't below 0 ar above 4. {index+1} of athlete file")
+                    errorLog.append(f"Year can't below 0 or above 4. At line {index+2} of athlete file")
 
                 if float(temp[5]) >= 8:
                     # Check Hour input
@@ -168,7 +168,7 @@ class FileIO:
                 testerLast = temp[1].isalpha()
 
                 if testerLast is False or testerFirst is False:
-                    errorLog.append(f"Invalid name format at line {index+1} of tutor file")
+                    errorLog.append(f"Invalid name format at line {index+2} of tutor file")
 
                 """------------TESTING NAME END------------"""
 
@@ -177,7 +177,7 @@ class FileIO:
                     float(temp[2])  # ID
                     float(temp[3])  # Hours
                 except ValueError:
-                    errorLog.append(f"Invalid ID/HOUR format at line {index+1} of tutor file")
+                    errorLog.append(f"Invalid ID/HOUR format at line {index+2} of tutor file")
 
                 if float(temp[3]) >= 25:
                     # Check Hour input
@@ -464,6 +464,6 @@ class FileIO:
         f = open("errorLog.txt", "w")
 
         for line in errorLog:
-            f.write(line)
+            print(str(line), file=f)
 
         f.close()

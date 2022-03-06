@@ -1,0 +1,3 @@
+2022-03-05
+GPA can't below 0 ar above 4. At line 3 of athlete file
+Year can't below 0 ar above 4. At line 4 of athlete file
