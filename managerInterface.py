@@ -1,6 +1,6 @@
 """
 Name: managerInterface.py
-Purpose: Create a user-friendly graphic user interface blah blah
+Purpose: Create a user-friendly interface to 
 
 Creation Date: Feb. 12, 2022
 Last Updated: Mar. 4, 2022
@@ -16,7 +16,7 @@ Created file                    my 2/12/22
 Code Documentation              dh 3/4/22
 """
 
-from calendar import c
+from calendar import c                                      #
 from platform import architecture, release
 import sched
 from tkinter import *
