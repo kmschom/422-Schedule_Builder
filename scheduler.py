@@ -41,8 +41,6 @@ class Scheduler:
         self.required = self._createRequired()  # queue of required hours; initialized with createRequired function
         self.optional = self._createOptional()  # queue of optional hours; initialized with createOptional function
         self.appointments = []  # list of appointment objects made; initialized as empty
-        self.athIndividualAppointments = {} # dictionary to keep track of each athlete's appointments; initialized as empty
-        self.tutIndividualAppointments = {} # dictionary to keep track of each tutor's appointments; initialized as empty
         self.classroomDailyIndex = []   # list of ints used to track classroom assignments for a given day and time
         # uses placeholder list and appends 24 ints to stand for hours in a day and appends each "day" to classroomDailyIndex list
         for i in range(5):
@@ -111,22 +109,6 @@ class Scheduler:
                                         ath.availability[currentDay].remove(time)
                                         tut.availability[currentDay].remove(time)
 
-                                        # check if the athlete already exists in the dictionary
-                                        if ath.id in self.athIndividualAppointments:
-                                            # if so, add appointment to their appointment list
-                                            self.athIndividualAppointments[ath.id].append(appointment)
-                                        else:
-                                            # if not, create their key and add the appointment
-                                            self.athIndividualAppointments[ath.id] = [appointment]
-
-                                        # check if the tutor already exists in the dictionary
-                                        if tut.id in self.tutIndividualAppointments:
-                                            # if so, add appointment to their appointment list
-                                            self.tutIndividualAppointments[tut.id].append(appointment)
-                                        else:
-                                            # if not, create their key and add the appointment
-                                            self.tutIndividualAppointments[tut.id] = [appointment]
-
                                         # update hours needed for the subject
                                         ath.hoursLeft.remove((sub, hours))
                                         self.score += 1000
@@ -174,14 +156,6 @@ class Scheduler:
                                                         if ath.hours > 1:
                                                             self.required.put((1 / ath.hours, ath, ath.hours))
                                                         ath.availability[currentDay].remove(time)
-
-                                                        # check if the athlete already exists in the dictionary
-                                                        if ath.id in self.athIndividualAppointments:
-                                                            # if so, add appointment to their appointment list
-                                                            self.athIndividualAppointments[ath.id].append(appt)
-                                                        else:
-                                                            # if not, create their key and add the appointment
-                                                            self.athIndividualAppointments[ath.id] = [appt]
 
                                                         # update hours needed for the subject
                                                         ath.hoursLeft.remove((sub, hours))
@@ -250,22 +224,6 @@ class Scheduler:
                                         ath.availability[currentDay].remove(time)
                                         tut.availability[currentDay].remove(time)
 
-                                        # check if the athlete already exists in the dictionary
-                                        if ath.id in self.athIndividualAppointments:
-                                            # if so, add appointment to their appointment list
-                                            self.athIndividualAppointments[ath.id].append(appointment)
-                                        else:
-                                            # if not, create their key and add the appointment
-                                            self.athIndividualAppointments[ath.id] = [appointment]
-
-                                        # check if the tutor already exists in the dictionary
-                                        if tut.id in self.tutIndividualAppointments:
-                                            # if so, add appointment to their appointment list
-                                            self.tutIndividualAppointments[tut.id].append(appointment)
-                                        else:
-                                            # if not, create their key and add the appointment
-                                            self.tutIndividualAppointments[tut.id] = [appointment]
-
                                         # update hours needed for the subject
                                         ath.hoursLeft.remove((sub, hours))
                                         # if subject has remaining hour(s) to schedule, reinsert to list
@@ -314,14 +272,6 @@ class Scheduler:
                                                             self.optional.put((1 / ath.hours, ath, ath.hours))
                                                         ath.availability[currentDay].remove(time)
                                                         scheduled = True
-
-                                                        # check if the athlete already exists in the dictionary
-                                                        if ath.id in self.athIndividualAppointments:
-                                                            # if so, add appointment to their appointment list
-                                                            self.athIndividualAppointments[ath.id].append(appt)
-                                                        else:
-                                                            # if not, create their key and add the appointment
-                                                            self.athIndividualAppointments[ath.id] = [appt]
 
                                                         self.score += 1
                                                         # update hours needed for the subject
