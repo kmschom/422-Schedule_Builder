@@ -97,8 +97,8 @@ class Builder:
                 if ath.name == first and ath.lastname == last:
                     individualApptList.append(appt)
 
-
-
+            if appt.tutor.name == first and appt.tutor.lastname == last:
+                individualApptList.append(appt)
 
         if len(individualApptList) > 0:
             self.fileIO.individualSchedule(individualApptList, f"{first}_{last}")
